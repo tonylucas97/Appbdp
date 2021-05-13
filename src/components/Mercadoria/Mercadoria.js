@@ -2,26 +2,37 @@ import React, { useState } from "react"
 import { View, SafeAreaView, ScrollView, Text, TextInput } from "react-native"
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
 export default function Mercadoria({ navigation, route }) {
 
     const [mercadorias, setMercadorias] = useState([])
+    const [isLoading,setIsLoading] = useState();
 
     useFocusEffect(
         React.useCallback(() => {
-
+            setIsLoading(true)
             const getMercadorias = async () => {
+                
                 const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/limite?pulos=0&token=${await AsyncStorage.getItem("token")}`);
                 const json = await result.json()
                 setMercadorias(json.mercadorias[0])
             }
 
             getMercadorias();
+            setIsLoading(false)
             return () => {
                 setMercadorias([])
             };
         }, [])
     );
+
+    const procuraMercadoria = async (texto) => {
+        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/busca?nome=${texto}`);
+        const json = await result.json();
+
+        console.log(json)
+    }
 
     return (
         <ScrollView>
@@ -46,7 +57,7 @@ export default function Mercadoria({ navigation, route }) {
                     </View>
                 </View>
                 <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginTop: 7 }}>
-                    {mercadorias != undefined && (
+                    {!isLoading && (
                         mercadorias.map(item => {
                             return (
                                 <View style={{ borderBottomWidth: 1, borderBottomColor: "#D8D8D8", borderStyle: "solid", paddingTop: 20, paddingBottom: 20, paddingLeft: 7, flexDirection: "row", flexWrap: "wrap", width: "85%" }}>
@@ -71,8 +82,15 @@ export default function Mercadoria({ navigation, route }) {
                             )
                         })
                     )}
+                    
+                    <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
+                        <ActivityIndicator animating={isLoading} hidesWhenStopped={true} />
+                    </View>    
+                        
+                        
+                    
                 </View>
-                {mercadorias.length > 0 && (
+                {mercadorias.length > 10 && (
                     <View style={{ flexDirection: "row", marginBottom: 20, justifyContent: "center", marginTop: 20 }}>
                         <Text onPress={() => carregaMaisDez()} style={{ width: "85%", color: "#fff", backgroundColor: "#0079FF", padding: 8, borderRadius: 5, textAlign: "center", marginBottom: 10 }}>Carregar mais 15</Text>
                     </View>

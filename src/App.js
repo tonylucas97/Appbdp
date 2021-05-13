@@ -7,6 +7,7 @@ const Stack = createStackNavigator();
 import Login from "./components/Login/Login";
 import Resumo from "./components/Resumo/Resumo";
 import LogedNavigator from "./components/LogedNavigator/LogedNavigator";
+import NovaMercadoria from "./components/Mercadoria/NovaMercadoria";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="LogedNavigator" component={LogedNavigator} />
+          <Stack.Screen name="NovaMercadoria" component={NovaMercadoria} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
