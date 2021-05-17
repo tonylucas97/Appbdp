@@ -30,7 +30,6 @@ export default function Mercadoria({ navigation, route }) {
     const procuraMercadoria = async (texto) => {
         const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/busca?nome=${texto}`);
         const json = await result.json();
-
         console.log(json)
     }
 

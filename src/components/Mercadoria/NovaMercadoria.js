@@ -21,19 +21,28 @@ export default function NovaMercadoria({ navigation }) {
             form.append("nome", nome);
             form.append("precoCompra", precoCompra);
             form.append("precoVenda", precoVenda);
-            if(foto){
-                form.append("img",{
-                    uri: foto.uri,
-                    type: foto.type,
-                    name: foto.fileName
-                })
-            }
+            
             const result = await fetch("http://apibaldosplasticos-com.umbler.net/mercadoria", {
                 method: "POST",
                 headers:{"Authorization": await AsyncStorage.getItem("token")},
                 body: form
             })
             const json = await result.json();
+
+            const formPhoto = new FormData()
+
+            formPhoto.append("img",{
+                uri: foto.uri,
+                type: foto.type,
+                name: foto.fileName
+            })
+
+            const resultPhoto = await fetch("http://apibaldosplasticos-com.umbler.net/mercadoria/Addphoto",{
+                method:"post",
+                body:formPhoto
+            })
+
+
             console.log(json)
         }
     }

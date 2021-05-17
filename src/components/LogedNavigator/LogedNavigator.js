@@ -16,13 +16,15 @@ import Svg, { G, Path, Defs, ClipPath } from "react-native-svg"
 export default function LogadoNavigation({ navigation,route }) {
 
     const [token, setToken] = useState()
+    const [admin,setAdmin] = useState()
 
     useFocusEffect(
         React.useCallback(() => {
 
             const getToken = async () => {
                 const token = await AsyncStorage.getItem("token")
-                console.log(token)
+                const admin = await AsyncStorage.getItem("admin");
+                setAdmin(admin)
                 setToken(token)
             }
 
@@ -70,7 +72,7 @@ export default function LogadoNavigation({ navigation,route }) {
                                 </Svg>
                             </Text>
                         </View>
-                        <Text style={{ fontFamily: "Ubuntu-Bold", marginTop: 10, fontSize: 20, color: "#0079FF" }}>{route.params.admin}</Text>
+                        <Text style={{ fontFamily: "Ubuntu-Bold", marginTop: 10, fontSize: 20, color: "#0079FF" }}>{admin}</Text>
                         <View style={{marginTop:25}}>
                             <Text style={{fontFamily:"Ubuntu-Regular",fontSize:17,color:"black"}} onPress={() => navigation.navigate("Resumo")}>Resumo</Text>
                         </View>
