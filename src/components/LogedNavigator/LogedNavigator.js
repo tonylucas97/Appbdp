@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import Resumo from '../Resumo/Resumo'
 import Mercadoria from "../Mercadoria/Mercadoria";
-
+import Venda from "../Venda/Venda";
 import { useFocusEffect } from '@react-navigation/native';
 import { Divider } from "react-native-paper"
 const Drawer = createDrawerNavigator();
@@ -80,7 +80,7 @@ export default function LogadoNavigation({ navigation,route }) {
                             <Text style={{fontFamily:"Ubuntu-Regular",fontSize:17}} onPress={() => navigation.navigate("Mercadoria")}>Mercadorias</Text>
                         </View>
                         <View style={{marginTop:25}}>
-                            <Text style={{fontFamily:"Ubuntu-Regular",fontSize:17}} onPress={() => navigation.navigate("Resumo")}>Notas</Text>
+                            <Text style={{fontFamily:"Ubuntu-Regular",fontSize:17}} onPress={() => navigation.navigate("Venda")}>Notas</Text>
                         </View>
                         <View style={{marginTop:25}}>
                             <Text style={{fontFamily:"Ubuntu-Regular",fontSize:17}} onPress={() => navigation.navigate("Resumo")}>Relatorio</Text>
@@ -114,6 +114,7 @@ export default function LogadoNavigation({ navigation,route }) {
 
             <Drawer.Screen name="Resumo" component={Resumo} />
             <Drawer.Screen name="Mercadoria" component={Mercadoria} />
+            <Drawer.Screen name="Venda" component={Venda} />
         </Drawer.Navigator>
     )
 

@@ -24,7 +24,7 @@ export default function Login({ navigation }) {
         const json = await result.json();
         if (json.success) {
             AsyncStorage.setItem("token", json.token)
-            AsyncStorage.setItem("admin", json.admin)
+            AsyncStorage.setItem("adminId", `${json.id}`)
             navigation.navigate("LogedNavigator",{admin:json.admin})
         }
         }else{
