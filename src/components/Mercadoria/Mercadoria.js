@@ -80,11 +80,7 @@ export default function Mercadoria({ navigation, route }) {
                                 </View>
                             )
                         })
-                    )}
-                    
-                    <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-                        <ActivityIndicator animating={isLoading} hidesWhenStopped={true} />
-                    </View>    
+                    )}  
                         
                         
                     
