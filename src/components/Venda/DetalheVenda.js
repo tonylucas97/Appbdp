@@ -9,7 +9,7 @@ import RNPrint from 'react-native-print';
 export default function DetalheVenda({ navigation, route }) {
 
     const [cliente, setCliente] = useState(route.params.cliente);
-    const [total, setTotal] = useState(route.params.total.toString().replace('.', ','));
+    const [total, setTotal] = useState(parseFloat(route.params.total).toFixed(2).toString().replace('.', ','));
     const [mercadoriaVendida, setMercadoriaVendida] = useState([]);
 
     useFocusEffect(
@@ -24,10 +24,11 @@ export default function DetalheVenda({ navigation, route }) {
                     const mercadoria = jsonMercadoria.mercadoria;
                     mercadoria.precoDesconto = jsonVendas.vendas[i].precoDesconto
                     mercadoria.precoDia = jsonVendas.vendas[i].precoDia
+                    mercadoria.quantidade = jsonVendas.vendas[i].quantidade
                     setMercadoriaVendida( mercadoriaVendida => [...mercadoriaVendida,mercadoria]);
                 }
 
-                
+                console.log(mercadoriaVendida)
                 
             }
 
@@ -38,26 +39,42 @@ export default function DetalheVenda({ navigation, route }) {
         }, [])
     );
 
-    /*
+    
     const geraPDF = async (id) => {
-        const resultNotas = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/${id}/${SyncStorage.get("token")}`);
+        const resultNotas = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`);
         const jsonNotas = await resultNotas.json();
-        const resultVendas = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas/${jsonNotas.notas.id}/${SyncStorage.get("token")}`);
+        const resultVendas = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas/porid?id=${jsonNotas.nota.id}&token=${await AsyncStorage.getItem("token")}`);
         const jsonVendas = await resultVendas.json();
         let mercadorias = [];
         for (let i = 0; i < jsonVendas.vendas.length; i++) {
-            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/${jsonVendas.vendas[i].id_mercadoria}/${SyncStorage.get("token")}`)
+            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${jsonVendas.vendas[i].mercadoriaId}&token=${await AsyncStorage.getItem("token")}`)
             const json = await result.json();
-            mercadorias.push(json.mercadoria)
+            const mercadoria = {
+                nome: json.mercadoria.nome,
+                precoVenda: json.mercadoria.precoVenda,
+                precoDia: jsonVendas.vendas[i].precoDia,
+                precoDesconto: jsonVendas.vendas[i].precoDesconto,
+                quantidade: jsonVendas.vendas[i].quantidade,
+                total: jsonVendas.vendas[i].desconto ? parseFloat(jsonVendas.vendas[i].desconto) * jsonVendas.vendas[i].quantidade : jsonVendas.vendas[i].precoDia * jsonVendas.vendas[i].quantidade
+            };
+            mercadorias.push(mercadoria)
+            console.log(mercadoria)
+
         }
-        let dia = jsonNotas.notas.data.slice(8, 10);
-        let mes = jsonNotas.notas.data.slice(5, 7);
-        let ano = jsonNotas.notas.data.slice(0, 4);
+        
+
+
+        
+        let dia = jsonNotas.nota.data.slice(8, 10);
+        let mes = jsonNotas.nota.data.slice(5, 7);
+        let ano = jsonNotas.nota.data.slice(0, 4);
         let dataFormated = dia + '/' + mes + '/' + ano
-        let corpo = `<h3 style="text-align: center;margin-top:25px;margin-bottom:15px">Bal Dos Plasticos</h3>
-        <h5 style="text-align: center">${jsonNotas.notas.cliente}</h5>
+        let corpo = `
+        
+        <h3 style="text-align: center;margin-top:25px;margin-bottom:15px">Bal Dos Plasticos</h3>
+        <h5 style="text-align: center">${jsonNotas.nota.cliente}</h5>
         <h5 style="text-align: center">Data: ${dataFormated}</h5>
-        <table style="border:1px solid;border-collapse: collapse;font-size:10px;margin: 0 auto;">
+        <table style="border:1px solid;border-collapse: collapse;font-size:10px;margin: 0 auto;width:80%">
         <thead>
             <tr>
                 <td style="border:1px solid;padding:7px">Nome da mercadoria</td>
@@ -68,45 +85,36 @@ export default function DetalheVenda({ navigation, route }) {
             </tr>   
         <thead>
         <tbody>`
-        for (let i = 0; i < jsonVendas.vendas.length; i++) {
-            if (parseFloat(jsonVendas.vendas[i].desconto) > 0) {
-                const desconto = (parseFloat(mercadorias[i].precoVenda).toFixed(2) - parseFloat(jsonVendas.vendas[i].desconto).toFixed(2)).toFixed(2)
-                const linha = `
-                    <tr>
-                        <td style="padding: 10px;border: 1px solid black">${mercadorias[i].nome}</td>
-                        <td style="padding: 10px;border: 1px solid black">${mercadorias[i].precoVenda.toString().replace('.', ',')}</td>
-                        <td style="padding: 10px;border: 1px solid black">${jsonVendas.vendas[i].quantidade}</td>
-                        <td style="padding: 10px;border: 1px solid black">${desconto.toString().replace(".", ',')}</td>
-                        <td style="padding: 10px;border: 1px solid black">${((parseFloat(mercadorias[i].precoVenda).toFixed(2) - desconto) * jsonVendas.vendas[i].quantidade).toFixed(2).toString().replace(".", ',')}</td>
-                    </tr>
-                
-                `
-                corpo += linha
-                console.log(corpo)
-            } else {
-                const linha = `
-                    <tr>
-                        <td style="padding: 10px;border: 1px solid black">${mercadorias[i].nome}</td>
-                        <td style="padding: 10px;border: 1px solid black">${jsonVendas.vendas[i].precoDia.toString().replace('.', ',')}</td>
-                        <td style="padding: 10px;border: 1px solid black">${jsonVendas.vendas[i].quantidade}</td>
-                        <td style="padding: 10px;border: 1px solid black">${jsonVendas.vendas[i].desconto.toFixed(2).replace(".", ",")}</td>
-                        <td style="padding: 10px;border: 1px solid black">${(parseFloat(mercadorias[i].precoVenda).toFixed(2) * jsonVendas.vendas[i].quantidade).toFixed(2).toString().replace(".", ",")}</td>
-                    </tr>
-                
-                `
-                corpo += linha
-            }
+
+        for(let i = 0 ; i < mercadorias.length ; i++){
+            const linha = `
+                <tr>
+                    <td style="padding: 10px;border: 1px solid black">${mercadorias[i].nome}</td>
+                    <td style="padding: 10px;border: 1px solid black">${mercadorias[i].precoDia}</td>
+                    <td style="padding: 10px;border: 1px solid black">${mercadorias[i].quantidade}</td>
+                    <td style="padding: 10px;border: 1px solid black">${mercadorias[i].precoDesconto}</td>
+                    <td style="padding: 10px;border: 1px solid black">${mercadorias[i].total}</td>
+                </tr>
+            `
+
+            corpo += linha;
         }
+        
+        
         corpo += `
             </tbody>
             </table>
-            <h5 style="margin-top:30px;text-align:center">Subtotal: ${parseFloat(jsonNotas.notas.total).toFixed(2).toString().replace(".", ",")}</h5>
+            
+            <h5 style="margin-top:30px;text-align:center">Subtotal: ${parseFloat(jsonNotas.nota.subtotal).toFixed(2).toString().replace(".", ",")}</h5>
+            
+            
             `
         RNPrint.print({
             html: corpo
         })
+        
     }
-    */
+    
     return (
         <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", width: "80%" }}>
@@ -131,7 +139,7 @@ export default function DetalheVenda({ navigation, route }) {
                                         <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "100%" }}>Preço: {item.precoDesconto ? parseFloat(item.precoDesconto).toFixed(2) : parseFloat(item.precoDia).toFixed(2) }</Text>
                                         <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
                                             <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "55%" }}>Quantidade: {item.quantidade}</Text>
-                                            <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "45%" }}>Total: {item.total}</Text>
+                                            <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "45%" }}>Total: {item.precoDesconto ? (item.precoDesconto * item.quantidade).toFixed(2) : (item.precoDia * item.quantidade).toFixed(2)}</Text>
                                         </View>
 
                                     </View>

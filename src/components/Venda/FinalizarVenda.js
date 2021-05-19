@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import { TextInput } from 'react-native-gesture-handler';
 import ConfirmaAcao from '../../utils/ConfirmaAcao';
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { json } from 'body-parser';
 
 export default function FinalizarVenda({ navigation, route }) {
 
@@ -34,22 +35,22 @@ export default function FinalizarVenda({ navigation, route }) {
             const resultMercadoria = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${route.params.carrinho[i].id}&token=${await AsyncStorage.getItem("token")}`);
             const jsonMercadoria = await resultMercadoria.json();
             const quantidade = route.params.carrinho[i].quantidade;
-            console.log(quantidade)
-            const form = new FormData();
-            form.append("precoDia",jsonMercadoria.mercadoria.precoVenda)
-            form.append("precoDesconto",route.params.carrinho[i].desconto)
-            form.append("quantidade",quantidade)
-            form.append("notaId",jsonNota.nota.id)
-            form.append("mercadoriaId",jsonMercadoria.mercadoria.id)
+            
 
             const resultVenda = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas`,{
                 method:"POST",
-                headers: {"Authorization": await AsyncStorage.getItem("token")},
-                body: form
+                headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({precoDia: jsonMercadoria.mercadoria.precoVenda,precoDesconto: route.params.carrinho[i].desconto
+                    ,quantidade: quantidade,notaId:jsonNota.nota.id,mercadoriaId: jsonMercadoria.mercadoria.id,token: await AsyncStorage.getItem("token")
+                })
             })
 
             const jsonVenda = await resultVenda.json();
-            console.log(jsonVenda)
+            
+        }
+
+        if(jsonNota.success){
+            navigation.navigate("Venda")
         }
           
 
