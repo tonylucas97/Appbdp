@@ -59,7 +59,7 @@ export default function Mercadoria({ navigation, route }) {
                     {!isLoading && (
                         mercadorias.map(item => {
                             return (
-                                <View style={{ borderBottomWidth: 1, borderBottomColor: "#D8D8D8", borderStyle: "solid", paddingTop: 20, paddingBottom: 20, paddingLeft: 7, flexDirection: "row", flexWrap: "wrap", width: "85%" }}>
+                                <View key={item.id} style={{ borderBottomWidth: 1, borderBottomColor: "#D8D8D8", borderStyle: "solid", paddingTop: 20, paddingBottom: 20, paddingLeft: 7, flexDirection: "row", flexWrap: "wrap", width: "85%" }}>
                                     <View style={{ flexDirection: "row", flexWrap: "wrap", width: "100%" }}>
                                         <Text style={{ fontFamily: "Ubuntu-Bold", color: "#9B9B9B", width: "50%", color: "#333333" }}>{item.nome}</Text>
 

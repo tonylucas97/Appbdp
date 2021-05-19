@@ -12,6 +12,8 @@ import DetalheMercadoria from "./components/Mercadoria/DetalheMercadoria";
 import NomeClienteVenda from "./components/Venda/NomeClienteVenda";
 import CarrinhoVenda from "./components/Venda/CarrinhoVenda";
 import FinalizarVenda from "./components/Venda/FinalizarVenda";
+import VendaData from "./components/Venda/VendaData";
+import DetalheVenda from "./components/Venda/DetalheVenda";
 
 export default function App() {
   return (
@@ -25,6 +27,8 @@ export default function App() {
           <Stack.Screen name="NomeClienteVenda" component={NomeClienteVenda} />
           <Stack.Screen name="CarrinhoVenda" component={CarrinhoVenda} />
           <Stack.Screen name="FinalizarVenda" component={FinalizarVenda} />
+          <Stack.Screen name="VendaData" component={VendaData} />
+          <Stack.Screen name="DetalheVenda" component={DetalheVenda} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

@@ -68,7 +68,7 @@ export default function CarrinhoVenda({ navigation, route }) {
     }
 
     const abreShowInfoMercadoria = async (id) => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/${id}/${await AsyncStorage.getItem("token")}`)
+        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`)
         const json = await result.json()
         setInfoMercadoria(json.mercadoria);
         setshowInfoMercadoria(true)

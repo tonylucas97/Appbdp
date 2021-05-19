@@ -23,34 +23,35 @@ export default function FinalizarVenda({ navigation, route }) {
 
     const finalizaNota = async () => {
         const adminId = await AsyncStorage.getItem("adminId");
-        fetch(`http://apibaldosplasticos-com.umbler.net/notas`, {
+        const resultNota = await fetch(`http://apibaldosplasticos-com.umbler.net/notas`, {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subtotal: subtotal, cliente: route.params.cliente,adminId: parseInt(adminId), descontoPorcentagem: String(descontoV), metodoPagamento: String(formaPagamentoV), token: await AsyncStorage.getItem("token") })
-        }).then(resultNota => {
-            return resultNota.json();
-        }).then(async (resultNota) => {
-            console.log(resultNota)
-            for (let i = 0; i < route.params.carrinho.length; i++) {
-
-                const resultMercadoria = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/${route.params.carrinho[i].id}/${await AsyncStorage.getItem("token")}`)
-                const jsonMercadoria = await resultMercadoria.json()
-                const resultVenda = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas`, {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id_mercadoria: jsonMercadoria.mercadoria.id, quantidade: route.params.carrinho[i].quantidade, notaId: resultNota.id, precoDesconto: route.params.carrinho[i].desconto, precoDia: jsonMercadoria.mercadoria.precoVenda, token: await AsyncStorage.getItem("token") })
-                })
-
-                const jsonVenda = await resultVenda.json()
-
-                console.log(jsonVenda)
-
-
-            }
-
-            navigation.navigate("Venda")
-
+            body: JSON.stringify({ subtotal: subtotal, cliente: route.params.cliente,descontoPorcentagem: String(descontoV), metodoPagamento: String(formaPagamentoV), token: await AsyncStorage.getItem("token") })
         })
+        const jsonNota = await resultNota.json();
+        
+        for(let i = 0 ; i < route.params.carrinho.length; i++) {
+            const resultMercadoria = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${route.params.carrinho[i].id}&token=${await AsyncStorage.getItem("token")}`);
+            const jsonMercadoria = await resultMercadoria.json();
+            const quantidade = route.params.carrinho[i].quantidade;
+            console.log(quantidade)
+            const form = new FormData();
+            form.append("precoDia",jsonMercadoria.mercadoria.precoVenda)
+            form.append("precoDesconto",route.params.carrinho[i].desconto)
+            form.append("quantidade",quantidade)
+            form.append("notaId",jsonNota.nota.id)
+            form.append("mercadoriaId",jsonMercadoria.mercadoria.id)
+
+            const resultVenda = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas`,{
+                method:"POST",
+                headers: {"Authorization": await AsyncStorage.getItem("token")},
+                body: form
+            })
+
+            const jsonVenda = await resultVenda.json();
+            console.log(jsonVenda)
+        }
+          
 
     }
 
@@ -92,7 +93,7 @@ export default function FinalizarVenda({ navigation, route }) {
                     <Text style={{ fontFamily: "Ubuntu-Bold", marginBottom: 20, fontSize: 19, alignSelf: "flex-start" }}>Forma de pagamento</Text>
                     <DropDownPicker
                         open={open}
-                        value={value}
+                        value={formaPagamentoV}
                         items={items}
                         setOpen={setOpen}
                         setValue={valor => setFormaPagamentoV(valor)}

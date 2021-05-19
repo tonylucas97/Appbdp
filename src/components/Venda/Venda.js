@@ -22,7 +22,6 @@ export default function Vendas({ navigation }) {
                     return result.json()
                 }).then((result) => {
                     setVendas(result.notas[0])
-                    console.log(result.notas[0])
                 })
             }
             getNotas()
@@ -37,10 +36,10 @@ export default function Vendas({ navigation }) {
     );
 
     const detalheVenda = async (id) => {
-        const result = await fetch(`https://baldosplasticosapi.herokuapp.com/notas/${id}/${await AsyncStorage.getItem("token")}`);
+        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/porid?token=${await AsyncStorage.getItem("token")}&id=${id}`);
         const json = await result.json();
         if (json.success) {
-            navigation.navigate("DetalheVenda", { cliente: json.notas.cliente, total: json.notas.total, id: id })
+            navigation.navigate("DetalheVenda", { cliente: json.nota.cliente, total: json.nota.subtotal, id: id })
         }
     }
 
