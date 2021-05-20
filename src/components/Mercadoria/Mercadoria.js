@@ -7,13 +7,13 @@ import { ActivityIndicator, Colors } from 'react-native-paper';
 export default function Mercadoria({ navigation, route }) {
 
     const [mercadorias, setMercadorias] = useState([])
-    const [isLoading,setIsLoading] = useState();
+    const [isLoading, setIsLoading] = useState();
 
     useFocusEffect(
         React.useCallback(() => {
             setIsLoading(true)
             const getMercadorias = async () => {
-                
+
                 const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/limite?pulos=0&token=${await AsyncStorage.getItem("token")}`);
                 const json = await result.json()
                 setMercadorias(json.mercadorias[0])
@@ -28,9 +28,17 @@ export default function Mercadoria({ navigation, route }) {
     );
 
     const procuraMercadoria = async (texto) => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/busca?nome=${texto}`);
-        const json = await result.json();
-        console.log(json)
+        if (texto.length > 1) {
+            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/busca/${texto}/${await AsyncStorage.getItem("token")}`);
+            const json = await result.json();
+
+            setMercadorias(json.mercadorias)
+        } else {
+            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/limite?pulos=0&token=${await AsyncStorage.getItem("token")}`);
+            const json = await result.json()
+            setMercadorias(json.mercadorias[0])
+        }
+        
     }
 
     return (
@@ -38,7 +46,7 @@ export default function Mercadoria({ navigation, route }) {
             <SafeAreaView >
                 <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 15 }}>
                     <View style={{ width: "85%", flexDirection: "row", flexWrap: "wrap", marginTop: 7, alignItems: "center" }}>
-                        <Text style={{width:"100%",paddingLeft:7,fontSize:23,fontFamily:"Ubuntu-Bold",marginBottom:20}}>Mercadorias</Text>
+                        <Text style={{ width: "100%", paddingLeft: 7, fontSize: 23, fontFamily: "Ubuntu-Bold", marginBottom: 20 }}>Mercadorias</Text>
                         <View style={{ flexDirection: "row", width: "50%", alignItems: "center" }}>
                             <Text style={{ paddingLeft: 7, fontFamily: "Ubuntu-Regular", color: "#9B9B9B" }}>Exibindo {mercadorias.length} Resultados</Text>
                         </View>
@@ -80,10 +88,10 @@ export default function Mercadoria({ navigation, route }) {
                                 </View>
                             )
                         })
-                    )}  
-                        
-                        
-                    
+                    )}
+
+
+
                 </View>
                 {mercadorias.length > 10 && (
                     <View style={{ flexDirection: "row", marginBottom: 20, justifyContent: "center", marginTop: 20 }}>

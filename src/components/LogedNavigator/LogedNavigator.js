@@ -26,6 +26,7 @@ export default function LogadoNavigation({ navigation,route }) {
                 const admin = await AsyncStorage.getItem("admin");
                 setAdmin(admin)
                 setToken(token)
+                console.log(admin)
             }
 
             getToken();

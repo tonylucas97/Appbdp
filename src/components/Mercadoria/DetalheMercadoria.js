@@ -18,7 +18,7 @@ export default function DetalheMercadoria({ navigation, route }) {
         React.useCallback(() => {
             const getMercadoria = async () => {
                 const token = await AsyncStorage.getItem("token")
-                const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/${route.params.id}/${token}`)
+                const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${route.params.id}&token=${token}`)
                 const json = await result.json();
 
                 setNome(json.mercadoria.nome)

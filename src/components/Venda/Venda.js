@@ -9,16 +9,17 @@ import DatePicker from 'react-native-date-picker'
 
 export default function Vendas({ navigation }) {
 
-    const [vendas, setVendas] = useState()
+    const [vendas, setVendas] = useState([])
     const [date, setDate] = useState(new Date())
     const [dataFinal, setDataFinal] = useState(new Date())
     const [showDataInicial, setShowDataInicial] = useState(false)
     const [showDataFinal, setShowDataFinal] = useState(false)
+    const [pulos, setPulos] = useState(0)
 
     useFocusEffect(
         React.useCallback(() => {
             const getNotas = async () => {
-                fetch(`http://apibaldosplasticos-com.umbler.net/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=0`).then((result) => {
+                fetch(`http://apibaldosplasticos-com.umbler.net/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${0}`).then((result) => {
                     return result.json()
                 }).then((result) => {
                     setVendas(result.notas[0])
@@ -31,6 +32,7 @@ export default function Vendas({ navigation }) {
                 setShowDataFinal(false);
                 setDate(new Date());
                 setDataFinal(new Date())
+                setPulos(0)
             };
         }, [])
     );
@@ -47,6 +49,18 @@ export default function Vendas({ navigation }) {
         const dataInicialFormated = date.getFullYear() + '-' + ("0" + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2)
         const dataFinalFormated = dataFinal.getFullYear() + '-' + ("0" + (dataFinal.getMonth() + 1)).slice(-2) + '-' + ('0' + (dataFinal.getDate())).slice(-2)
         navigation.navigate("VendaData", { dataInicial: dataInicialFormated, dataFinal: dataFinalFormated })
+    }
+
+    const carregaMais = async () => {
+        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${pulos + 10}`)
+        const json = await result.json();
+        if(json.notas[0].length){
+            console.log("tem alguam coisa")
+            setVendas(vendas.concat(json.notas[0]))
+            setPulos(pulos + 10)
+        }
+        console.log(json.notas[0])
+
     }
 
     const toggleShowDataInicial = () => {
@@ -71,85 +85,87 @@ export default function Vendas({ navigation }) {
 
     return (
         <React.Fragment>
-            <SafeAreaView style={{ backgroundColor: "#fff", height: "100%" }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', zIndex: 4 }}>
-                    <View style={{ width: "85%", backgroundColor: 'rgba(0,121,255,0.075)', flexDirection: 'row', flexWrap: 'wrap', padding: 15, marginTop: 25, borderRadius: 5, alignItems: "center" }}>
-                        <View style={{ width: "37%", flexDirection: 'row', justifyContent: "center", alignItems: "center" }}>
+            <ScrollView>
+                <SafeAreaView style={{ backgroundColor: "#fff", height: "100%" }}>
 
-                            <Text style={{ fontFamily: "Ubuntu-Medium", color: "#0079FF" }} onPress={toggleShowDataInicial}>Data Inicial </Text>
-                            <Text style={{ marginLeft: 4 }} onPress={toggleShowDataInicial}>
-                                <Svg
-                                    width={11}
-                                    height={7}
-                                    viewBox="0 0 11 7"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <Path
-                                        d="M10.246.29a1 1 0 00-1.41 0l-3.59 3.54L1.706.29a1 1 0 10-1.41 1.42l4.24 4.24a1 1 0 001.42 0l4.29-4.24a1 1 0 000-1.42z"
-                                        fill="#0079FF"
-                                    />
-                                </Svg>
-                            </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', zIndex: 4 }}>
+                        <View style={{ width: "85%", backgroundColor: 'rgba(0,121,255,0.075)', flexDirection: 'row', flexWrap: 'wrap', padding: 15, marginTop: 25, borderRadius: 5, alignItems: "center" }}>
+                            <View style={{ width: "37%", flexDirection: 'row', justifyContent: "center", alignItems: "center" }}>
 
-                        </View>
+                                <Text style={{ fontFamily: "Ubuntu-Medium", color: "#0079FF" }} onPress={toggleShowDataInicial}>Data Inicial </Text>
+                                <Text style={{ marginLeft: 4 }} onPress={toggleShowDataInicial}>
+                                    <Svg
+                                        width={11}
+                                        height={7}
+                                        viewBox="0 0 11 7"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <Path
+                                            d="M10.246.29a1 1 0 00-1.41 0l-3.59 3.54L1.706.29a1 1 0 10-1.41 1.42l4.24 4.24a1 1 0 001.42 0l4.29-4.24a1 1 0 000-1.42z"
+                                            fill="#0079FF"
+                                        />
+                                    </Svg>
+                                </Text>
 
-
-                        <View style={{ width: "26%", alignItems: "center" }}>
-                            <Text style={{ backgroundColor: "#fff", padding: 7, borderRadius: 5 }}>
-                                <Svg
-                                    width={18}
-                                    height={18}
-                                    viewBox="0 0 18 18"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <Path
-                                        d="M15.3 1.8h-1.8V.9a.9.9 0 10-1.8 0v.9H6.3V.9a.9.9 0 10-1.8 0v.9H2.7A2.7 2.7 0 000 4.5v10.8A2.7 2.7 0 002.7 18h12.6a2.7 2.7 0 002.7-2.7V4.5a2.7 2.7 0 00-2.7-2.7zm.9 13.5a.9.9 0 01-.9.9H2.7a.9.9 0 01-.9-.9V9h14.4v6.3zm0-8.1H1.8V4.5a.9.9 0 01.9-.9h1.8v.9a.9.9 0 001.8 0v-.9h5.4v.9a.9.9 0 101.8 0v-.9h1.8a.9.9 0 01.9.9v2.7z"
-                                        fill="#0079FF"
-                                    />
-                                </Svg>
-                            </Text>
-                        </View>
-                        <View style={{ width: "37%", flexDirection: 'row', justifyContent: "center", alignItems: "center" }}>
-
-                            <Text style={{ fontFamily: "Ubuntu-Medium", color: "#0079FF" }} onPress={toggleShowDataFinal}>Data Final </Text>
-                            <Text style={{ marginLeft: 4 }} onPress={toggleShowDataFinal}>
-                                <Svg
-                                    width={11}
-                                    height={7}
-                                    viewBox="0 0 11 7"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <Path
-                                        d="M10.246.29a1 1 0 00-1.41 0l-3.59 3.54L1.706.29a1 1 0 10-1.41 1.42l4.24 4.24a1 1 0 001.42 0l4.29-4.24a1 1 0 000-1.42z"
-                                        fill="#0079FF"
-                                    />
-                                </Svg>
-                            </Text>
-
-                        </View>
-                    </View>
-                </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'center', zIndex: 4 }}>
-                    <View style={{ width: "85%", flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                        <Text style={{ backgroundColor: "#0079FF", color: "#fff", paddingBottom: 8, paddingTop: 8, paddingLeft: 14, paddingRight: 14, marginTop: 15, borderRadius: 5 }} onPress={vendaPorData}>Procurar</Text>
-                    </View>
-                </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: "center", marginTop: 20 }}>
-                    <View style={{ width: "85%", flexDirection: "column" }}>
-                        <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
-                            <View style={{ width: "50%", justifyContent: "center" }}>
-                                <Text style={{ marginLeft: 7, marginTop: 15, marginBottom: 15, fontSize: 23, fontFamily: "Ubuntu-Bold", color: "#001E40" }}>Notas</Text>
                             </View>
-                            <View style={{ width: "50%", flexWrap: "wrap", flexDirection: "row", justifyContent: "flex-end" }}>
-                                <Text onPress={() => navigation.navigate("NomeClienteVenda")} style={{ marginLeft: 7, marginTop: 15, marginBottom: 15, fontSize: 16, fontFamily: "Ubuntu-Medium", color: "#fff", backgroundColor: "#FFA300", paddingTop: 7, paddingBottom: 7, paddingLeft: 10, paddingRight: 10, borderRadius: 5 }}>Nova</Text>
+
+
+                            <View style={{ width: "26%", alignItems: "center" }}>
+                                <Text style={{ backgroundColor: "#fff", padding: 7, borderRadius: 5 }}>
+                                    <Svg
+                                        width={18}
+                                        height={18}
+                                        viewBox="0 0 18 18"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <Path
+                                            d="M15.3 1.8h-1.8V.9a.9.9 0 10-1.8 0v.9H6.3V.9a.9.9 0 10-1.8 0v.9H2.7A2.7 2.7 0 000 4.5v10.8A2.7 2.7 0 002.7 18h12.6a2.7 2.7 0 002.7-2.7V4.5a2.7 2.7 0 00-2.7-2.7zm.9 13.5a.9.9 0 01-.9.9H2.7a.9.9 0 01-.9-.9V9h14.4v6.3zm0-8.1H1.8V4.5a.9.9 0 01.9-.9h1.8v.9a.9.9 0 001.8 0v-.9h5.4v.9a.9.9 0 101.8 0v-.9h1.8a.9.9 0 01.9.9v2.7z"
+                                            fill="#0079FF"
+                                        />
+                                    </Svg>
+                                </Text>
+                            </View>
+                            <View style={{ width: "37%", flexDirection: 'row', justifyContent: "center", alignItems: "center" }}>
+
+                                <Text style={{ fontFamily: "Ubuntu-Medium", color: "#0079FF" }} onPress={toggleShowDataFinal}>Data Final </Text>
+                                <Text style={{ marginLeft: 4 }} onPress={toggleShowDataFinal}>
+                                    <Svg
+                                        width={11}
+                                        height={7}
+                                        viewBox="0 0 11 7"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <Path
+                                            d="M10.246.29a1 1 0 00-1.41 0l-3.59 3.54L1.706.29a1 1 0 10-1.41 1.42l4.24 4.24a1 1 0 001.42 0l4.29-4.24a1 1 0 000-1.42z"
+                                            fill="#0079FF"
+                                        />
+                                    </Svg>
+                                </Text>
+
                             </View>
                         </View>
-                        <ScrollView>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', zIndex: 4 }}>
+                        <View style={{ width: "85%", flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                            <Text style={{ backgroundColor: "#0079FF", color: "#fff", paddingBottom: 8, paddingTop: 8, paddingLeft: 14, paddingRight: 14, marginTop: 15, borderRadius: 5 }} onPress={vendaPorData}>Procurar</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: "center", marginTop: 20 }}>
+                        <View style={{ width: "85%", flexDirection: "column" }}>
+                            <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
+                                <View style={{ width: "50%", justifyContent: "center" }}>
+                                    <Text style={{ marginLeft: 7, marginTop: 15, marginBottom: 15, fontSize: 23, fontFamily: "Ubuntu-Bold", color: "#001E40" }}>Notas</Text>
+                                </View>
+                                <View style={{ width: "50%", flexWrap: "wrap", flexDirection: "row", justifyContent: "flex-end" }}>
+                                    <Text onPress={() => navigation.navigate("NomeClienteVenda")} style={{ marginLeft: 7, marginTop: 15, marginBottom: 15, fontSize: 16, fontFamily: "Ubuntu-Medium", color: "#fff", backgroundColor: "#FFA300", paddingTop: 7, paddingBottom: 7, paddingLeft: 10, paddingRight: 10, borderRadius: 5 }}>Nova</Text>
+                                </View>
+                            </View>
+
                             {vendas != undefined && (
                                 vendas.map((item, index) => {
                                     return (
@@ -166,7 +182,7 @@ export default function Vendas({ navigation }) {
                                                     </Text>
                                                 </View>
                                                 <View style={{ width: "50%" }}>
-                                                    
+
                                                 </View>
 
                                             </View>
@@ -191,11 +207,16 @@ export default function Vendas({ navigation }) {
                                 })
 
                             )}
-                        </ScrollView>
 
+
+                        </View>
                     </View>
-                </View>
-            </SafeAreaView>
+                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "center" }}>
+                        <Text onPress={() => carregaMais()} style={{ marginTop: 18, marginBottom: 18, width: "85%", backgroundColor: "#0079FF", textAlign: "center", paddingTop: 10, paddingBottom: 10, color: "white" }}>Carregar mais 10</Text>
+                    </View>
+
+                </SafeAreaView>
+            </ScrollView>
             {
                 showDataInicial && (
                     <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", position: 'absolute', height: '100%', width: '100%', backgroundColor: 'rgba(196,196,196,0.8)' }}>
