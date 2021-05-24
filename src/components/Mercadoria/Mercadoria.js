@@ -8,6 +8,7 @@ export default function Mercadoria({ navigation, route }) {
 
     const [mercadorias, setMercadorias] = useState([])
     const [isLoading, setIsLoading] = useState();
+    const [pulos, setPulos] = useState(0)
 
     useFocusEffect(
         React.useCallback(() => {
@@ -26,6 +27,17 @@ export default function Mercadoria({ navigation, route }) {
             };
         }, [])
     );
+
+    const carregaMais = async () => {
+        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/limite?pulos=${pulos + 10}`)
+        const json = await result.json();
+        if (json.mercadorias[0].length) {
+            console.log("tem alguam coisa")
+            setMercadorias(mercadorias.concat(json.mercadorias[0]))
+            setPulos(pulos + 10)
+        }
+        console.log(json.mercadorias[0])
+    }
 
     const procuraMercadoria = async (texto) => {
         if (texto.length > 1) {
@@ -93,9 +105,9 @@ export default function Mercadoria({ navigation, route }) {
 
 
                 </View>
-                {mercadorias.length > 10 && (
+                {mercadorias.length >= 10 && (
                     <View style={{ flexDirection: "row", marginBottom: 20, justifyContent: "center", marginTop: 20 }}>
-                        <Text onPress={() => carregaMaisDez()} style={{ width: "85%", color: "#fff", backgroundColor: "#0079FF", padding: 8, borderRadius: 5, textAlign: "center", marginBottom: 10 }}>Carregar mais 15</Text>
+                        <Text onPress={() => carregaMais()} style={{ width: "85%", color: "#fff", backgroundColor: "#0079FF", padding: 8, borderRadius: 5, textAlign: "center", marginBottom: 10 }}>Carregar mais 10</Text>
                     </View>
                 )}
             </SafeAreaView>

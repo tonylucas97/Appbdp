@@ -54,7 +54,7 @@ export default function Vendas({ navigation }) {
     const carregaMais = async () => {
         const result = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${pulos + 10}`)
         const json = await result.json();
-        if(json.notas[0].length){
+        if (json.notas[0].length) {
             console.log("tem alguam coisa")
             setVendas(vendas.concat(json.notas[0]))
             setPulos(pulos + 10)
@@ -211,9 +211,11 @@ export default function Vendas({ navigation }) {
 
                         </View>
                     </View>
-                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "center" }}>
-                        <Text onPress={() => carregaMais()} style={{ marginTop: 18, marginBottom: 18, width: "85%", backgroundColor: "#0079FF", textAlign: "center", paddingTop: 10, paddingBottom: 10, color: "white" }}>Carregar mais 10</Text>
-                    </View>
+                    {vendas.length >= 10 && (
+                        <View style={{ flexDirection: "row", marginBottom: 20, justifyContent: "center", marginTop: 20 }}>
+                            <Text onPress={() => carregaMais()} style={{ width: "85%", color: "#fff", backgroundColor: "#0079FF", padding: 8, borderRadius: 5, textAlign: "center", marginBottom: 10 }}>Carregar mais 10</Text>
+                        </View>
+                    )}
 
                 </SafeAreaView>
             </ScrollView>

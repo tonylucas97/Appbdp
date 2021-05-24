@@ -83,9 +83,6 @@ export default function LogadoNavigation({ navigation,route }) {
                         <View style={{marginTop:25}}>
                             <Text style={{fontFamily:"Ubuntu-Regular",fontSize:17}} onPress={() => navigation.navigate("Venda")}>Notas</Text>
                         </View>
-                        <View style={{marginTop:25}}>
-                            <Text style={{fontFamily:"Ubuntu-Regular",fontSize:17}} onPress={() => navigation.navigate("Resumo")}>Relatorio</Text>
-                        </View>
 
                     </DrawerContentScrollView>
                     <View style={{ flexWrap: "wrap", flexDirection: "row", alignItems: "center" }}>
@@ -115,7 +112,7 @@ export default function LogadoNavigation({ navigation,route }) {
 
             <Drawer.Screen name="Resumo" component={Resumo} />
             <Drawer.Screen name="Mercadoria" component={Mercadoria} />
-            <Drawer.Screen name="Venda" component={Venda} />
+            <Drawer.Screen name="Venda" component={Venda} /> 
         </Drawer.Navigator>
     )
 

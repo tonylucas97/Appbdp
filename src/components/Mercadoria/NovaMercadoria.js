@@ -36,8 +36,14 @@ export default function NovaMercadoria({ navigation }) {
                 body: form
             })
             const json = await result.json();
+            if(json.success){
+                navigation.navigate("Mercadoria")
+            }
 
-            console.log(json)
+            setNome(null)
+            setPrecoCompra(null)
+            setPrecoVenda(null)
+            setFoto(null)
         }
     }
 

@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
-import { Text, View, TextInput ,Image} from 'react-native';
+import { Text, View, TextInput, Image, Button } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import Svg, { Path } from "react-native-svg"
 import ConfirmaAcao from '../../utils/ConfirmaAcao';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 export default function DetalheMercadoria({ navigation, route }) {
 
-    const [nome, setNome] = useState()
-    const [precoCompra, setPrecoCompra] = useState()
-    const [precoVenda, setPrecoVenda] = useState()
-    const [nomeImg,setNomeImg] = useState()
-    const [showConfirma, setShowConfirma] = useState(false)
-    const [idMercadoria, setIdMercadoria] = useState(route.params.id)
+    const [nome, setNome] = useState();
+    const [precoCompra, setPrecoCompra] = useState();
+    const [precoVenda, setPrecoVenda] = useState();
+    const [nomeImg, setNomeImg] = useState();
+    const [showConfirma, setShowConfirma] = useState(false);
+    const [idMercadoria, setIdMercadoria] = useState(route.params.id);
+    const [foto, setFoto] = useState();
+    const [showOptions, setShowOptions] = useState(false);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -40,6 +43,20 @@ export default function DetalheMercadoria({ navigation, route }) {
         setShowConfirma(false)
     }
 
+    const showLibrary = () => {
+        launchImageLibrary("photo", (response) => {
+            setFoto(response);
+            setShowOptions(false)
+        })
+    }
+
+    const showCamera = () => {
+        launchCamera("photo", (response) => {
+            setFoto(response)
+            setShowOptions(false)
+        })
+    }
+
     const deletaMercadoria = async (id) => {
         const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/${id}`, {
             method: "DELETE",
@@ -55,14 +72,22 @@ export default function DetalheMercadoria({ navigation, route }) {
     const updateMercadoria = async () => {
         if (nome && precoCompra && precoVenda) {
             const form = new FormData();
-            form.append("nome",nome);
-            form.append("precoCompra",parseFloat(precoCompra.replace(",", ".")));
-            form.append("precoVenda",parseFloat(precoVenda.replace(",", ".")));
-            form.append("id",idMercadoria);
+            form.append("nome", nome);
+            form.append("precoCompra", parseFloat(precoCompra.replace(",", ".")));
+            form.append("precoVenda", parseFloat(precoVenda.replace(",", ".")));
+            form.append("id", idMercadoria);
+
+            if (foto) {
+                form.append("img", {
+                    uri: foto.uri,
+                    type: foto.type,
+                    name: foto.fileName
+                })
+            }
 
             const result = await fetch("http://apibaldosplasticos-com.umbler.net/mercadoria/alterarItem", {
                 method: "POST",
-                body:  form
+                body: form
 
             })
             const json = await result.json()
@@ -98,19 +123,30 @@ export default function DetalheMercadoria({ navigation, route }) {
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Compra" value={precoCompra ? precoCompra.toString().replace(".", ",") : precoCompra} onChangeText={text => setPrecoCompra(text)} />
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Venda" value={precoVenda ? precoVenda.toString().replace(".", ",") : precoVenda} onChangeText={text => setPrecoVenda(text)} />
                     </View>
+                    
                     {nomeImg && (
                         <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "center", width: "100%" }}>
                             <Image source={{ uri: `http://apibaldosplasticos-com.umbler.net/${nomeImg}` }} style={{ width: 200, height: 200 }} />
                         </View>
                     )}
+                    <View style={{ width: "55%", marginTop: 25 }}>
+                        <Button title="Selecionar Foto" onPress={() => showOptions ? setShowOptions(false) : setShowOptions(true)} />
+                    </View>
                     <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "flex-end", width: "100%" }}>
                         <Text style={{ backgroundColor: "#FB212F", color: "#fff", width: "25%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5, marginRight: 20 }} onPress={() => navigation.navigate("Mercadoria")}>Voltar</Text>
                         <Text style={{ backgroundColor: "#2ECC71", color: "#fff", width: "25%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5 }} onPress={() => updateMercadoria()}>Salvar</Text>
                     </View>
+                    
                 </View>
             </View>
             {showConfirma && (
                 <ConfirmaAcao mensagem={"Deseja Remover essa Mercadoria ?"} cancelaAcao={cancelaAcao} acaoMethod={deletaMercadoria} parametros={{ id: idMercadoria }} />
+            )}
+            {showOptions && (
+                <View style={{ width: "100%", alignItems: "center", bottom: 0, position: "absolute", backgroundColor: "#fff" }}>
+                    <Text style={{ paddingBottom: 27, paddingTop: 32, fontFamily: "Ubuntu-Regular" }} onPress={() => showLibrary()}>Biblioteca</Text>
+                    <Text style={{ paddingBottom: 32, fontFamily: "Ubuntu-Regular" }} onPress={() => showCamera()}>Tirar foto</Text>
+                </View>
             )}
         </React.Fragment>
     )
