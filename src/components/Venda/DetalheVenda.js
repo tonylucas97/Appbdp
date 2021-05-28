@@ -14,22 +14,22 @@ export default function DetalheVenda({ navigation, route }) {
 
     useFocusEffect(
         React.useCallback(() => {
-            
+
             const getNota = async () => {
                 const resultVendas = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas/porid?token=${await AsyncStorage.getItem("token")}&id=${route.params.id}`)
                 const jsonVendas = await resultVendas.json();
-                for(let i = 0 ; i < jsonVendas.vendas.length ; i++){
+                for (let i = 0; i < jsonVendas.vendas.length; i++) {
                     const resultMercadoria = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${jsonVendas.vendas[i].mercadoriaId}&token=${await AsyncStorage.getItem("token")}`);
                     const jsonMercadoria = await resultMercadoria.json();
                     const mercadoria = jsonMercadoria.mercadoria;
                     mercadoria.precoDesconto = jsonVendas.vendas[i].precoDesconto
                     mercadoria.precoDia = jsonVendas.vendas[i].precoDia
                     mercadoria.quantidade = jsonVendas.vendas[i].quantidade
-                    setMercadoriaVendida( mercadoriaVendida => [...mercadoriaVendida,mercadoria]);
+                    setMercadoriaVendida(mercadoriaVendida => [...mercadoriaVendida, mercadoria]);
                 }
 
                 console.log(mercadoriaVendida)
-                
+
             }
 
             getNota()
@@ -39,7 +39,7 @@ export default function DetalheVenda({ navigation, route }) {
         }, [])
     );
 
-    
+
     const geraPDF = async (id) => {
         const resultNotas = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`);
         const jsonNotas = await resultNotas.json();
@@ -61,20 +61,24 @@ export default function DetalheVenda({ navigation, route }) {
             console.log(mercadoria)
 
         }
-        
 
 
-        
+
+
         let dia = jsonNotas.nota.data.slice(8, 10);
         let mes = jsonNotas.nota.data.slice(5, 7);
         let ano = jsonNotas.nota.data.slice(0, 4);
         let dataFormated = dia + '/' + mes + '/' + ano
         let corpo = `
         
-        <h3 style="text-align: center;margin-top:25px;margin-bottom:15px">Bal Dos Plasticos</h3>
-        <h5 style="text-align: center">${jsonNotas.nota.cliente}</h5>
-        <h5 style="text-align: center">Data: ${dataFormated}</h5>
+        <div style="width:80%;margin:0 auto;margin-bottom:30px;">
+            
+            <p style="text-align:left;diplay:inline">${jsonNotas.nota.cliente}</p>
+            
+        </div>
+        
         <table style="border:1px solid;border-collapse: collapse;font-size:10px;margin: 0 auto;width:80%">
+        
         <thead>
             <tr>
                 <td style="border:1px solid;padding:7px">Nome da mercadoria</td>
@@ -86,7 +90,7 @@ export default function DetalheVenda({ navigation, route }) {
         <thead>
         <tbody>`
 
-        for(let i = 0 ; i < mercadorias.length ; i++){
+        for (let i = 0; i < mercadorias.length; i++) {
             const linha = `
                 <tr>
                     <td style="padding: 10px;border: 1px solid black">${mercadorias[i].nome}</td>
@@ -99,22 +103,23 @@ export default function DetalheVenda({ navigation, route }) {
 
             corpo += linha;
         }
-        
-        
+
+
         corpo += `
             </tbody>
             </table>
-            
-            <h5 style="margin-top:30px;text-align:center">Subtotal: ${parseFloat(jsonNotas.nota.subtotal).toFixed(2).toString().replace(".", ",")}</h5>
+            <h5 style="margin-top:30px;text-align:center">Desconto: ${jsonNotas.nota.descontoPorcento} %</h5>
+            <h5 style="margin-top:15px;text-align:center">Subtotal: ${parseFloat(jsonNotas.nota.subtotal).toFixed(2).toString().replace(".", ",")}</h5>
             
             
             `
         RNPrint.print({
             html: corpo
+            
         })
-        
+
     }
-    
+
     return (
         <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", width: "80%" }}>
@@ -136,7 +141,7 @@ export default function DetalheVenda({ navigation, route }) {
                                 <View key={index} style={{ flexDirection: "row", paddingBottom: 10, marginTop: 10, justifyContent: "center" }}>
                                     <View style={{ borderBottomColor: "#C4C4C4", borderBottomWidth: 1, width: "85%", paddingBottom: 12, flexDirection: "row", flexWrap: "wrap" }}>
                                         <Text style={{ fontFamily: "Ubuntu-Bold", padding: 5, width: "100%", color: "black" }}>{item.nome}</Text>
-                                        <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "100%" }}>Preço: {item.precoDesconto ? parseFloat(item.precoDesconto).toFixed(2) : parseFloat(item.precoDia).toFixed(2) }</Text>
+                                        <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "100%" }}>Preço: {item.precoDesconto ? parseFloat(item.precoDesconto).toFixed(2) : parseFloat(item.precoDia).toFixed(2)}</Text>
                                         <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
                                             <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "55%" }}>Quantidade: {item.quantidade}</Text>
                                             <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "45%" }}>Total: {item.precoDesconto ? (item.precoDesconto * item.quantidade).toFixed(2) : (item.precoDia * item.quantidade).toFixed(2)}</Text>

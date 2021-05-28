@@ -20,10 +20,10 @@ export default function CarrinhoVenda({ navigation, route }) {
 
     useFocusEffect(
         React.useCallback(() => {
-            
-            
-            return () => {  
-                
+
+
+            return () => {
+
             };
         }, [])
     );
@@ -119,7 +119,10 @@ export default function CarrinhoVenda({ navigation, route }) {
                                     {mercadoriasBusca != undefined && (
                                         mercadoriasBusca.map(item => {
                                             return (
-                                                <Text onPress={() => abreShowInfoMercadoria(item.id)} style={{ fontFamily: "Ubuntu-Regular", paddingLeft: 12, paddingRight: 12, paddingBottom: 12, paddingTop: 18 }}>{item.nome}</Text>
+                                                <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+                                                    <Text onPress={() => abreShowInfoMercadoria(item.id)} style={{ fontFamily: "Ubuntu-Regular", paddingLeft: 12, paddingRight: 12, paddingBottom: 12, paddingTop: 18 }}>{item.nome}</Text>
+                                                    <Text onPress={() => abreShowInfoMercadoria(item.id)} style={{ fontFamily: "Ubuntu-Regular", paddingLeft: 12, paddingRight: 12, paddingBottom: 12, paddingTop: 18 }}>{item.precoVenda.toString().replace(".",",")}</Text>
+                                                </View>
                                             )
                                         })
                                     )}
@@ -149,19 +152,19 @@ export default function CarrinhoVenda({ navigation, route }) {
                                             <Text style={{ fontFamily: "Ubuntu-Regular", width: "60%", color: "#333333", marginTop: 12 }}>R$ {item.preco}</Text>
                                             <Text style={{ fontFamily: "Ubuntu-Regular", width: "40%", color: "#333333", marginTop: 12 }}>Quant: {item.quantidade}</Text>
                                             {item.desconto != 0 && (
-                                                <Text style={{ fontFamily: "Ubuntu-Regular", width: "60%", color: "#333333", marginTop: 12 }}>Desconto: {parseFloat(item.desconto).toFixed(2)}</Text> 
+                                                <Text style={{ fontFamily: "Ubuntu-Regular", width: "60%", color: "#333333", marginTop: 12 }}>Desconto: {parseFloat(item.desconto).toFixed(2)}</Text>
                                             )}
                                             {item.desconto == 0 && (
-                                                <Text style={{ fontFamily: "Ubuntu-Regular", width: "60%", color: "#333333", marginTop: 12 }}>Desconto: {0}</Text> 
-                                            )} 
+                                                <Text style={{ fontFamily: "Ubuntu-Regular", width: "60%", color: "#333333", marginTop: 12 }}>Desconto: {0}</Text>
+                                            )}
                                             <Text style={{ fontFamily: "Ubuntu-Regular", width: "40%", color: "#333333", marginTop: 12 }}>Total: {" "}
-                                            {item.desconto != 0 && (
-                                                (parseFloat(item.desconto) * parseInt(item.quantidade)).toFixed(2)
-                                            )}
-                                             {item.desconto == 0 && (
-                                                (parseFloat(item.preco) * parseInt(item.quantidade)).toFixed(2)
-                                            )}
-                                            </Text> 
+                                                {item.desconto != 0 && (
+                                                    (parseFloat(item.desconto) * parseInt(item.quantidade)).toFixed(2)
+                                                )}
+                                                {item.desconto == 0 && (
+                                                    (parseFloat(item.preco) * parseInt(item.quantidade)).toFixed(2)
+                                                )}
+                                            </Text>
                                         </View>
                                         <View style={{ width: "30%" }}>
                                             {showBtnDelete && (
@@ -227,7 +230,7 @@ export default function CarrinhoVenda({ navigation, route }) {
 
                 )}
                 <View style={{ flexDirection: "row", justifyContent: "flex-end", width: "80%" }}>
-                    <Text style={{ paddingRight: 15, fontFamily: "Ubuntu-Bold", marginTop: 15, fontSize: 16 }}>Total: {total ? total.replace(".",",") : null}</Text>
+                    <Text style={{ paddingRight: 15, fontFamily: "Ubuntu-Bold", marginTop: 15, fontSize: 16 }}>Total: {total ? total.replace(".", ",") : null}</Text>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "flex-end", width: "80%", marginTop: 20 }}>
                     <Text onPress={() => navigation.navigate("NomeClienteVenda")} style={{ fontFamily: "Ubuntu-regular", backgroundColor: "#FB212F", paddingBottom: 8, paddingTop: 8, paddingLeft: 19, paddingRight: 19, borderRadius: 5, marginRight: 15, color: "#fff" }}>Voltar</Text>

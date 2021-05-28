@@ -19,8 +19,8 @@ export default function NovaMercadoria({ navigation }) {
 
             const form = new FormData();
             form.append("nome", nome);
-            form.append("precoCompra", precoCompra);
-            form.append("precoVenda", precoVenda);
+            form.append("precoCompra", parseFloat(precoCompra.replace(",",".")));
+            form.append("precoVenda", parseFloat(precoVenda.replace(",",".")));
 
             if (foto) {
                 form.append("img", {
@@ -39,11 +39,6 @@ export default function NovaMercadoria({ navigation }) {
             if(json.success){
                 navigation.navigate("Mercadoria")
             }
-
-            setNome(null)
-            setPrecoCompra(null)
-            setPrecoVenda(null)
-            setFoto(null)
         }
     }
 
