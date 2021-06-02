@@ -13,17 +13,17 @@ export default function NovaMercadoria({ navigation }) {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showOptions, setShowOptions] = useState(false);
     const [camera, setCamera] = useState({ type: RNCamera.Constants.Type.back, flashMode: RNCamera.Constants.FlashMode.auto })
-    const [barBodes, setBarBodes] = useState([])
+    const [codigoBarras, setCodigoBarras] = useState("")
     const [showScanner, setShowScanner] = useState(false)
 
     const salvaMercadoria = async () => {
-        if (nome && precoCompra && precoVenda) {
+        if (nome && precoCompra && precoVenda ) {
 
             const form = new FormData();
             form.append("nome", nome);
             form.append("precoCompra", parseFloat(precoCompra.replace(",", ".")));
             form.append("precoVenda", parseFloat(precoVenda.replace(",", ".")));
-
+            form.append("codigoBarras",codigoBarras.toString())
             if (foto) {
                 form.append("img", {
                     uri: foto.uri,
@@ -41,6 +41,13 @@ export default function NovaMercadoria({ navigation }) {
             if (json.success) {
                 navigation.navigate("Mercadoria")
             }
+        }
+    }
+
+    const onBarCodeRead = (result) => {
+        if(result){
+            setCodigoBarras(result.data)
+            setShowScanner(false)
         }
     }
 
@@ -63,9 +70,9 @@ export default function NovaMercadoria({ navigation }) {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <View style={{ width: "85%" }}>
                     <Text style={{ fontSize: 25, textAlign: 'center', fontFamily: "Ubuntu-Bold" }}>Nova Mercadoria</Text>
-                    <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "space-between", width: "100%" }}>
-                        <TextInput />
-                        <Text onPress={() => showScanner ? setShowScanner(false) : setShowScanner(true)}>Codigo de Barras</Text>
+                    <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "nowrap", justifyContent: "space-between", width: "100%" }}>
+                        <TextInput onChangeText={text => setCodigoBarras(text)} placeholder="Codigo de barras" value={codigoBarras} style={{ backgroundColor: "white", width: "48%", borderRadius: 5, paddingLeft: 14 }}/>
+                        <Text style={{ backgroundColor: "#0079FF", color: "#fff",width:"48%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5 }} onPress={() => showScanner ? setShowScanner(false) : setShowScanner(true)}>Codigo de Barras</Text>
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "space-between", width: "100%" }}>
                         <TextInput style={{ backgroundColor: "white", width: "100%", borderRadius: 5, paddingLeft: 14 }} placeholder="Nome" onChangeText={text => setNome(text)} />
@@ -105,11 +112,9 @@ export default function NovaMercadoria({ navigation }) {
                             setCamera(ref);
                         }}
                         defaultTouchToFocus
-                        flashMode={camera.flashMode}
-                        mirrorImage={false}
-                        onBarCodeRead={() => console.log("asdasdas")}
-                        onFocusChanged={() => { }}
-                        onZoomChanged={() => { }}
+                        flashMode={RNCamera.Constants.FlashMode.on}
+                        autoFocus={RNCamera.Constants.AutoFocus.on}
+                        onBarCodeRead={result => onBarCodeRead(result)}
                         androidCameraPermissionOptions={{
                             title: 'Permission to use camera',
                             message: 'We need your permission to use your camera',
@@ -117,7 +122,7 @@ export default function NovaMercadoria({ navigation }) {
                             buttonNegative: 'Cancel',
                         }}
                         style={styles.preview}
-                        type={camera.type}
+                        type={RNCamera.Constants.Type.back}
                     />
                     <View style={[styles.overlay, styles.topOverlay]}>
                         <Text style={styles.scanScreenMessage}>Please scan the barcode.</Text>
