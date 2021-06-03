@@ -47,10 +47,13 @@ export default function CarrinhoVenda({ navigation, route }) {
         setShowBtnDelete(true)
     }
 
-    const onBarCodeRead = (result) => {
-        if(result){
-            setCodigoBarras(result.data)
+    const onBarCodeRead = async (resultCodigo) => {
+        if (resultCodigo) {
             setShowScanner(false)
+            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porcodigo?codigoBarras=${resultCodigo.data}`);
+            const json = await result.json();
+            setInfoMercadoria(json.mercadoria);
+            setshowInfoMercadoria(true)
         }
     }
 
@@ -104,7 +107,7 @@ export default function CarrinhoVenda({ navigation, route }) {
         <React.Fragment>
             <SafeAreaView style={{ backgroundColor: "#fff", height: "100%", flexDirection: "row", justifyContent: "center", flexWrap: "wrap" }} onPress={() => console.log("Apertou")}>
 
-                <View style={{ borderRadius: 5, width: "80%", flexDirection: "row", flexWrap: "nowrap",justifyContent:"space-between", marginTop: 30 }}>
+                <View style={{ borderRadius: 5, width: "80%", flexDirection: "row", flexWrap: "nowrap", justifyContent: "space-between", marginTop: 30 }}>
                     <View style={{ backgroundColor: 'rgba(196,196,196,0.13)', flexDirection: "row", alignItems: "center" }}>
                         <Text style={{ paddingRight: 10, paddingLeft: 15, width: "20%" }}>
                             <Svg
@@ -136,9 +139,11 @@ export default function CarrinhoVenda({ navigation, route }) {
                             />
                         </Svg>
                     </Text>
-                    <View style={{ width: "100%" }}>
+                </View>
+                <View style={{backgroundColor: "#fff", elevation: 4, zIndex: 100, width: "80%" }}>
+                    <View style={{ width: "80%" }}>
                         {showMercadorias && (
-                            <View style={{ backgroundColor: "#fff", position: "absolute", elevation: 2, zIndex: 100, width: "100%" }}>
+                            <View>
                                 <ScrollView style={{ height: 250 }}>
                                     {mercadoriasBusca != undefined && (
                                         mercadoriasBusca.map(item => {
@@ -160,7 +165,7 @@ export default function CarrinhoVenda({ navigation, route }) {
                     <Text style={{ fontSize: 24, fontFamily: "Ubuntu-Bold" }}>Carrinho</Text>
                 </View>
                 {carrinho === undefined || carrinho.length == 0 && (
-                    <View style={{ width: "85%", flexDirection: "row", marginTop: 24, justifyContent: "center" }}>
+                    <View style={{ width: "85%", flexDirection: "row", marginTop: 24, justifyContent: "center"}}>
                         <Text style={{ fontSize: 18, fontFamily: "Ubuntu-Bold", color: "#9B9B9B" }}>carrinho vazio</Text>
                     </View>
                 )}
