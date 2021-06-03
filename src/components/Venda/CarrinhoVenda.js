@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Text, TextInput, View } from 'react-native';
+import { SafeAreaView, Text, TextInput, View ,ToastAndroid} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Svg, { Path } from "react-native-svg"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import InformacoesMercadoria from './components/InformacoesMercadoria';
 import { useFocusEffect } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
+import StyledToast from "../../utils/StyledToast";
 
 export default function CarrinhoVenda({ navigation, route }) {
 
@@ -52,8 +53,12 @@ export default function CarrinhoVenda({ navigation, route }) {
             setShowScanner(false)
             const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porcodigo?codigoBarras=${resultCodigo.data}`);
             const json = await result.json();
-            setInfoMercadoria(json.mercadoria);
-            setshowInfoMercadoria(true)
+            if (json.success) {
+                setInfoMercadoria(json.mercadoria);
+                setshowInfoMercadoria(true)
+            }else{
+                ToastAndroid.show("Produto nao cadastrado",ToastAndroid.SHORT)
+            }
         }
     }
 
@@ -140,7 +145,7 @@ export default function CarrinhoVenda({ navigation, route }) {
                         </Svg>
                     </Text>
                 </View>
-                <View style={{backgroundColor: "#fff", elevation: 4, zIndex: 100, width: "80%" }}>
+                <View style={{ backgroundColor: "#fff", elevation: 4, zIndex: 100, width: "80%" }}>
                     <View style={{ width: "80%" }}>
                         {showMercadorias && (
                             <View>
@@ -165,7 +170,7 @@ export default function CarrinhoVenda({ navigation, route }) {
                     <Text style={{ fontSize: 24, fontFamily: "Ubuntu-Bold" }}>Carrinho</Text>
                 </View>
                 {carrinho === undefined || carrinho.length == 0 && (
-                    <View style={{ width: "85%", flexDirection: "row", marginTop: 24, justifyContent: "center"}}>
+                    <View style={{ width: "85%", flexDirection: "row", marginTop: 24, justifyContent: "center" }}>
                         <Text style={{ fontSize: 18, fontFamily: "Ubuntu-Bold", color: "#9B9B9B" }}>carrinho vazio</Text>
                     </View>
                 )}
