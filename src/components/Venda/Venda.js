@@ -19,7 +19,7 @@ export default function Vendas({ navigation }) {
     useFocusEffect(
         React.useCallback(() => {
             const getNotas = async () => {
-                fetch(`hhttps://apibdp.herokuapp.com/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${0}`).then((result) => {
+                fetch(`https://apibdp.herokuapp.com/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${0}`).then((result) => {
                     return result.json()
                 }).then((result) => {
                     setVendas(result.notas[0])

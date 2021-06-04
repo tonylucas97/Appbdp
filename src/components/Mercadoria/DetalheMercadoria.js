@@ -16,7 +16,7 @@ export default function DetalheMercadoria({ navigation, route }) {
     const [idMercadoria, setIdMercadoria] = useState(route.params.id);
     const [foto, setFoto] = useState();
     const [showOptions, setShowOptions] = useState(false);
-
+    const [codigoBarras,setCodigoBarras] = useState();
     useFocusEffect(
         React.useCallback(() => {
             const getMercadoria = async () => {
@@ -29,6 +29,7 @@ export default function DetalheMercadoria({ navigation, route }) {
                 setPrecoVenda(json.mercadoria.precoVenda)
                 setNomeImg(json.mercadoria.nomeImg)
                 setIdMercadoria(json.mercadoria.id)
+                setCodigoBarras(json.mercadoria.codigoBarras)
             }
 
             getMercadoria()
@@ -119,18 +120,10 @@ export default function DetalheMercadoria({ navigation, route }) {
                         </Text>
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "space-between", width: "100%" }}>
+                    <TextInput style={{ backgroundColor: "white", width: "100%", borderRadius: 5, paddingLeft: 14,marginBottom:15 }} placeholder="Nome" value={codigoBarras} editable={false} />
                         <TextInput style={{ backgroundColor: "white", width: "100%", borderRadius: 5, paddingLeft: 14 }} placeholder="Nome" value={nome} onChangeText={text => setNome(text)} />
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Compra" value={precoCompra ? precoCompra.toString().replace(".", ",") : precoCompra} onChangeText={text => setPrecoCompra(text)} />
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Venda" value={precoVenda ? precoVenda.toString().replace(".", ",") : precoVenda} onChangeText={text => setPrecoVenda(text)} />
-                    </View>
-                    
-                    {nomeImg && (
-                        <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "center", width: "100%" }}>
-                            <Image source={{ uri: `http://apibaldosplasticos-com.umbler.net/${nomeImg}` }} style={{ width: 200, height: 200 }} />
-                        </View>
-                    )}
-                    <View style={{ width: "55%", marginTop: 25 }}>
-                        <Button title="Selecionar Foto" onPress={() => showOptions ? setShowOptions(false) : setShowOptions(true)} />
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "flex-end", width: "100%" }}>
                         <Text style={{ backgroundColor: "#FB212F", color: "#fff", width: "25%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5, marginRight: 20 }} onPress={() => navigation.navigate("Mercadoria")}>Voltar</Text>

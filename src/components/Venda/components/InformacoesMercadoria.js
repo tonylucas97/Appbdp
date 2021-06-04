@@ -29,6 +29,7 @@ export default function InformacoesMercadoria(props) {
                     </Text>
                 </View>
                 <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap", justifyContent: "flex-end", marginTop: 25 }}>
+                <Text style={{ fontFamily: "Ubuntu-regular" ,backgroundColor:"#FB212F",marginRight:20,paddingBottom: 8, paddingTop: 8, paddingLeft: 14, paddingRight: 14, borderRadius: 5,color:"#fff"}} onPress={() => props.showOffInformacoes()}>Cancelar</Text>
                     <Text style={{ fontFamily: "Ubuntu-regular" ,backgroundColor:"#2ECC71",paddingBottom: 8, paddingTop: 8, paddingLeft: 14, paddingRight: 14, borderRadius: 5,color:"#fff"}} onPress={() => props.addCarrinho(props.mercadoria.nome,props.mercadoria.precoVenda,desconto,quantidade,props.mercadoria.id)}>Salvar</Text>
                 </View>
 

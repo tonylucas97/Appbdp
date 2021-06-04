@@ -80,14 +80,6 @@ export default function NovaMercadoria({ navigation }) {
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Venda" onChangeText={text => setPrecoVenda(text)} />
 
                     </View>
-                    <View style={{ width: "55%", marginTop: 25 }}>
-                        <Text onPress={() => showOptions ? setShowOptions(false) : setShowOptions(true)}>Selecionar Foto</Text>
-                    </View>
-                    {foto && (
-                        <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "center", width: "100%" }}>
-                            <Image source={{ uri: foto.uri }} style={{ width: 200, height: 200 }} />
-                        </View>
-                    )}
                     <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "flex-end", width: "100%" }}>
                         <Text style={{ backgroundColor: "#FB212F", color: "#fff", width: "25%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5, marginRight: 20 }} onPress={() => navigation.navigate("Mercadoria")}>Voltar</Text>
                         <Text style={{ backgroundColor: "#2ECC71", color: "#fff", width: "25%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5 }} onPress={() => salvaMercadoria()}>Salvar</Text>
@@ -97,12 +89,7 @@ export default function NovaMercadoria({ navigation }) {
                     </View>
 
                 </View>
-                {showOptions && (
-                    <View style={{ width: "100%", alignItems: "center", bottom: 0, position: "absolute", backgroundColor: "#fff" }}>
-                        <Text style={{ paddingBottom: 27, paddingTop: 32, fontFamily: "Ubuntu-Regular" }} onPress={() => showLibrary()}>Biblioteca</Text>
-                        <Text style={{ paddingBottom: 32, fontFamily: "Ubuntu-Regular" }} onPress={() => showCamera()}>Tirar foto</Text>
-                    </View>
-                )}
+                
 
             </View>
             {showScanner && (

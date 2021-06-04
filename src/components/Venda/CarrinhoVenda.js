@@ -21,7 +21,7 @@ export default function CarrinhoVenda({ navigation, route }) {
     const [infoMercadoria, setInfoMercadoria] = useState();
     const [showScanner, setShowScanner] = useState(false)
     const [camera, setCamera] = useState({ type: RNCamera.Constants.Type.back, flashMode: RNCamera.Constants.FlashMode.auto })
-    const [codigoBarras, setCodigoBarras] = useState("")
+    const [codigoBarras, setCodigoBarras] = useState()
 
     useFocusEffect(
         React.useCallback(() => {
@@ -50,10 +50,11 @@ export default function CarrinhoVenda({ navigation, route }) {
 
     const onBarCodeRead = async (resultCodigo) => {
         if (resultCodigo) {
+            console.log(resultCodigo)
             setShowScanner(false)
             const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${resultCodigo.data}`);
             const json = await result.json();
-            if (json.success) {
+            if (json) {
                 setInfoMercadoria(json.mercadoria);
                 setshowInfoMercadoria(true)
             }else{
@@ -72,18 +73,18 @@ export default function CarrinhoVenda({ navigation, route }) {
         }
     }
 
-    const procuraMercadoria = async (nome) => {
-        setTextoBusca(nome)
-        if (nome.length > 2) {
-            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/busca/${nome}/${await AsyncStorage.getItem("token")}`)
-            const json = await result.json()
-            setMercadoriasBusca(json.mercadorias)
-            setShowMercadorias(true)
-        } else if (nome.length < 2) {
-            setMercadoriasBusca([]);
-            setShowMercadorias(false)
+    const procuraMercadoria = async (codigo) => {
+        setCodigoBarras(codigo)
+        const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${codigo}`);
+        const json = await result.json();
 
+        if(json){
+            console.log(json.mercadoria)
         }
+    }
+
+    const showOffInfomacoes = () => {
+        setshowInfoMercadoria(false)
     }
 
     const abreShowInfoMercadoria = async (id) => {
@@ -272,7 +273,7 @@ export default function CarrinhoVenda({ navigation, route }) {
                 </View>
             </SafeAreaView>
             {showInfoMercadoria && (
-                <InformacoesMercadoria mercadoria={infoMercadoria} addCarrinho={addCarrinho} />
+                <InformacoesMercadoria mercadoria={infoMercadoria} addCarrinho={addCarrinho} showOffInformacoes={showOffInfomacoes}/>
             )}
             {showScanner && (
                 <View style={styles.container}>
