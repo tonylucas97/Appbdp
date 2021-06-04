@@ -21,7 +21,7 @@ export default function DetalheMercadoria({ navigation, route }) {
         React.useCallback(() => {
             const getMercadoria = async () => {
                 const token = await AsyncStorage.getItem("token")
-                const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${route.params.id}&token=${token}`)
+                const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porid?id=${route.params.id}&token=${token}`)
                 const json = await result.json();
 
                 setNome(json.mercadoria.nome)
@@ -58,7 +58,7 @@ export default function DetalheMercadoria({ navigation, route }) {
     }
 
     const deletaMercadoria = async (id) => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/${id}`, {
+        const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/${id}`, {
             method: "DELETE",
             headers: { 'Content-Type': 'application/json', 'Authorization': await AsyncStorage.getItem("token") }
 
@@ -85,7 +85,7 @@ export default function DetalheMercadoria({ navigation, route }) {
                 })
             }
 
-            const result = await fetch("http://apibaldosplasticos-com.umbler.net/mercadoria/alterarItem", {
+            const result = await fetch("https://apibdp.herokuapp.com/mercadoria/alterarItem", {
                 method: "POST",
                 body: form
 

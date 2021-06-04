@@ -24,7 +24,7 @@ export default function FinalizarVenda({ navigation, route }) {
 
     const finalizaNota = async () => {
         const adminId = await AsyncStorage.getItem("adminId");
-        const resultNota = await fetch(`http://apibaldosplasticos-com.umbler.net/notas`, {
+        const resultNota = await fetch(`https://apibdp.herokuapp.com/notas`, {
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ subtotal: subtotal, cliente: route.params.cliente,descontoPorcentagem: String(descontoV), metodoPagamento: String(formaPagamentoV), token: await AsyncStorage.getItem("token") })
@@ -32,12 +32,12 @@ export default function FinalizarVenda({ navigation, route }) {
         const jsonNota = await resultNota.json();
         
         for(let i = 0 ; i < route.params.carrinho.length; i++) {
-            const resultMercadoria = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${route.params.carrinho[i].id}&token=${await AsyncStorage.getItem("token")}`);
+            const resultMercadoria = await fetch(`https://apibdp.herokuapp.com/mercadoria/porid?id=${route.params.carrinho[i].id}&token=${await AsyncStorage.getItem("token")}`);
             const jsonMercadoria = await resultMercadoria.json();
             const quantidade = route.params.carrinho[i].quantidade;
             
 
-            const resultVenda = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas`,{
+            const resultVenda = await fetch(`https://apibdp.herokuapp.com/vendas`,{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body: JSON.stringify({precoDia: jsonMercadoria.mercadoria.precoVenda,precoDesconto: route.params.carrinho[i].desconto

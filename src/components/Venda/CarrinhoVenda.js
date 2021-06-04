@@ -51,7 +51,7 @@ export default function CarrinhoVenda({ navigation, route }) {
     const onBarCodeRead = async (resultCodigo) => {
         if (resultCodigo) {
             setShowScanner(false)
-            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porcodigo?codigoBarras=${resultCodigo.data}`);
+            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${resultCodigo.data}`);
             const json = await result.json();
             if (json.success) {
                 setInfoMercadoria(json.mercadoria);
@@ -75,7 +75,7 @@ export default function CarrinhoVenda({ navigation, route }) {
     const procuraMercadoria = async (nome) => {
         setTextoBusca(nome)
         if (nome.length > 2) {
-            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/busca/${nome}/${await AsyncStorage.getItem("token")}`)
+            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/busca/${nome}/${await AsyncStorage.getItem("token")}`)
             const json = await result.json()
             setMercadoriasBusca(json.mercadorias)
             setShowMercadorias(true)
@@ -87,7 +87,7 @@ export default function CarrinhoVenda({ navigation, route }) {
     }
 
     const abreShowInfoMercadoria = async (id) => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`)
+        const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`)
         const json = await result.json()
         setInfoMercadoria(json.mercadoria);
         setshowInfoMercadoria(true)

@@ -16,12 +16,13 @@ export default function Login({ navigation }) {
         const formData = new FormData();
         formData.append('usuario', usuario)
         formData.append('senha', senha)
-        const result = await fetch("http://apibaldosplasticos-com.umbler.net/login", {
+        const result = await fetch("https://apibdp.herokuapp.com/login", {
             method: "post",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ usuario: usuario, senha: senha })
         });
         const json = await result.json();
+        console.log(json)
         if (json.success) {
             AsyncStorage.setItem("token", json.token)
             AsyncStorage.setItem("admin",json.admin)

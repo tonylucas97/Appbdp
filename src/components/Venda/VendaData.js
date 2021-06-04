@@ -14,7 +14,7 @@ export default function VendaData({ navigation, route }) {
         React.useCallback(() => {
             const getNotas = async () => {
                 console.log(route.params.dataInicial)
-                fetch(`http://apibaldosplasticos-com.umbler.net/notas/${route.params.dataInicial}/${route.params.dataFinal}/${await AsyncStorage.getItem("token")}`).then((result) => {
+                fetch(`https://apibdp.herokuapp.com/notas/${route.params.dataInicial}/${route.params.dataFinal}/${await AsyncStorage.getItem("token")}`).then((result) => {
                     return result.json()
                 }).then((result) => {
                     setNotas(result.notas)
@@ -28,7 +28,7 @@ export default function VendaData({ navigation, route }) {
     );
 
     const detalheVenda = async (id) => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/${id}/${await AsyncStorage.getItem("token")}`);
+        const result = await fetch(`https://apibdp.herokuapp.com/notas/${id}/${await AsyncStorage.getItem("token")}`);
         const json = await result.json();
         console.log(jsopn)
         if (json.success) {

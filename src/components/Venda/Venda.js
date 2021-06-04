@@ -19,7 +19,7 @@ export default function Vendas({ navigation }) {
     useFocusEffect(
         React.useCallback(() => {
             const getNotas = async () => {
-                fetch(`http://apibaldosplasticos-com.umbler.net/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${0}`).then((result) => {
+                fetch(`hhttps://apibdp.herokuapp.com/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${0}`).then((result) => {
                     return result.json()
                 }).then((result) => {
                     setVendas(result.notas[0])
@@ -38,7 +38,7 @@ export default function Vendas({ navigation }) {
     );
 
     const detalheVenda = async (id) => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/porid?token=${await AsyncStorage.getItem("token")}&id=${id}`);
+        const result = await fetch(`https://apibdp.herokuapp.com/notas/porid?token=${await AsyncStorage.getItem("token")}&id=${id}`);
         const json = await result.json();
         if (json.success) {
             navigation.navigate("DetalheVenda", { cliente: json.nota.cliente, total: json.nota.subtotal, id: id })
@@ -52,7 +52,7 @@ export default function Vendas({ navigation }) {
     }
 
     const carregaMais = async () => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${pulos + 10}`)
+        const result = await fetch(`https://apibdp.herokuapp.com/notas/limite?token=${await AsyncStorage.getItem("token")}&pulos=${pulos + 10}`)
         const json = await result.json();
         if (json.notas[0].length) {
             console.log("tem alguam coisa")

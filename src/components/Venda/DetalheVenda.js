@@ -16,10 +16,10 @@ export default function DetalheVenda({ navigation, route }) {
         React.useCallback(() => {
 
             const getNota = async () => {
-                const resultVendas = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas/porid?token=${await AsyncStorage.getItem("token")}&id=${route.params.id}`)
+                const resultVendas = await fetch(`https://apibdp.herokuapp.com/vendas/porid?token=${await AsyncStorage.getItem("token")}&id=${route.params.id}`)
                 const jsonVendas = await resultVendas.json();
                 for (let i = 0; i < jsonVendas.vendas.length; i++) {
-                    const resultMercadoria = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${jsonVendas.vendas[i].mercadoriaId}&token=${await AsyncStorage.getItem("token")}`);
+                    const resultMercadoria = await fetch(`https://apibdp.herokuapp.com/mercadoria/porid?id=${jsonVendas.vendas[i].mercadoriaId}&token=${await AsyncStorage.getItem("token")}`);
                     const jsonMercadoria = await resultMercadoria.json();
                     const mercadoria = jsonMercadoria.mercadoria;
                     mercadoria.precoDesconto = jsonVendas.vendas[i].precoDesconto
@@ -41,13 +41,13 @@ export default function DetalheVenda({ navigation, route }) {
 
 
     const geraPDF = async (id) => {
-        const resultNotas = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`);
+        const resultNotas = await fetch(`https://apibdp.herokuapp.com/notas/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`);
         const jsonNotas = await resultNotas.json();
-        const resultVendas = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas/porid?id=${jsonNotas.nota.id}&token=${await AsyncStorage.getItem("token")}`);
+        const resultVendas = await fetch(`https://apibdp.herokuapp.com/vendas/porid?id=${jsonNotas.nota.id}&token=${await AsyncStorage.getItem("token")}`);
         const jsonVendas = await resultVendas.json();
         let mercadorias = [];
         for (let i = 0; i < jsonVendas.vendas.length; i++) {
-            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/porid?id=${jsonVendas.vendas[i].mercadoriaId}&token=${await AsyncStorage.getItem("token")}`)
+            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porid?id=${jsonVendas.vendas[i].mercadoriaId}&token=${await AsyncStorage.getItem("token")}`)
             const json = await result.json();
             const mercadoria = {
                 nome: json.mercadoria.nome,

@@ -32,7 +32,7 @@ export default function NovaMercadoria({ navigation }) {
                 })
             }
 
-            const result = await fetch("http://apibaldosplasticos-com.umbler.net/mercadoria", {
+            const result = await fetch("https://apibdp.herokuapp.com/mercadoria", {
                 method: "POST",
                 headers: { "Authorization": await AsyncStorage.getItem("token") },
                 body: form

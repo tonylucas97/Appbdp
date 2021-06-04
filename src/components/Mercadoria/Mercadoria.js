@@ -15,7 +15,7 @@ export default function Mercadoria({ navigation, route }) {
             setIsLoading(true)
             const getMercadorias = async () => {
 
-                const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/limite?pulos=0&token=${await AsyncStorage.getItem("token")}`);
+                const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/limite?pulos=0&token=${await AsyncStorage.getItem("token")}`);
                 const json = await result.json()
                 setMercadorias(json.mercadorias[0])
             }
@@ -29,7 +29,7 @@ export default function Mercadoria({ navigation, route }) {
     );
 
     const carregaMais = async () => {
-        const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/limite?pulos=${pulos + 10}`)
+        const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/limite?pulos=${pulos + 10}`)
         const json = await result.json();
         if (json.mercadorias[0].length) {
             console.log("tem alguam coisa")
@@ -41,12 +41,12 @@ export default function Mercadoria({ navigation, route }) {
 
     const procuraMercadoria = async (texto) => {
         if (texto.length > 1) {
-            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/busca/${texto}/${await AsyncStorage.getItem("token")}`);
+            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/busca/${texto}/${await AsyncStorage.getItem("token")}`);
             const json = await result.json();
 
             setMercadorias(json.mercadorias)
         } else {
-            const result = await fetch(`http://apibaldosplasticos-com.umbler.net/mercadoria/limite?pulos=0&token=${await AsyncStorage.getItem("token")}`);
+            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/limite?pulos=0&token=${await AsyncStorage.getItem("token")}`);
             const json = await result.json()
             setMercadorias(json.mercadorias[0])
         }

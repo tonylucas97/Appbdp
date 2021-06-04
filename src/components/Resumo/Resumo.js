@@ -17,13 +17,13 @@ export default function App({ navigation }) {
                 var mes = String(data.getMonth() + 1).padStart(2, '0');
                 var ano = data.getFullYear();
                 const dataAtual = ano + '-' + mes + '-' + dia;
-                const result = await fetch(`http://apibaldosplasticos-com.umbler.net/notas/${dataAtual}/${dataAtual}/${await AsyncStorage.getItem("token")}`);
+                const result = await fetch(`https://apibdp.herokuapp.com/notas/${dataAtual}/${dataAtual}/${await AsyncStorage.getItem("token")}`);
                 const json = await result.json()
                 let subtotal = 0
                 let lucroL = 0
                 for (let i = 0; i < json.notas.length; i++) {
                     subtotal += total + json.notas[i].subtotal
-                    const resultVenda = await fetch(`http://apibaldosplasticos-com.umbler.net/vendas/porid?id=${json.notas[i].id}&token=${await AsyncStorage.getItem("token")}`)
+                    const resultVenda = await fetch(`https://apibdp.herokuapp.com/vendas/porid?id=${json.notas[i].id}&token=${await AsyncStorage.getItem("token")}`)
                     const jsonVenda = await resultVenda.json()
                     for (let j = 0; j < jsonVenda.vendas.length; j++) {
                         if (jsonVenda.vendas[j].precoDesconto != 0) {
