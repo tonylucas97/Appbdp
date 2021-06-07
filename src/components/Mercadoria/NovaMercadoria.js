@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
-import { Button, Text, Image, TextInput, View } from 'react-native';
+import { Button, Text, Image, TextInput, View ,ToastAndroid} from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { RNCamera } from 'react-native-camera';
 
@@ -40,6 +40,8 @@ export default function NovaMercadoria({ navigation }) {
             const json = await result.json();
             if (json.success) {
                 navigation.navigate("Mercadoria")
+            }else{
+                ToastAndroid.show(json.message,ToastAndroid.SHORT)
             }
         }
     }

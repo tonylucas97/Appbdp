@@ -158,7 +158,7 @@ export default function DetalheVenda({ navigation, route }) {
             </View>
             <View style={{ width: "80%", marginTop: 20, justifyContent: "flex-end", flexDirection: "row" }}>
                 <Text style={{ paddingTop: 7, paddingBottom: 7, paddingLeft: 17, paddingRight: 17, color: "#fff", backgroundColor: "#0079FF", borderRadius: 5, marginRight: 18 }} onPress={() => geraPDF(route.params.id)}>PDF</Text>
-                <Text style={{ paddingTop: 7, paddingBottom: 7, paddingLeft: 17, paddingRight: 17, color: "#fff", backgroundColor: "#FB212F", borderRadius: 5 }} onPress={() => console.log(mercadoriaVendida)}>Voltar</Text>
+                <Text style={{ paddingTop: 7, paddingBottom: 7, paddingLeft: 17, paddingRight: 17, color: "#fff", backgroundColor: "#FB212F", borderRadius: 5 }} onPress={() => navigation.navigate("Venda")}>Voltar</Text>
             </View>
         </SafeAreaView >
     )

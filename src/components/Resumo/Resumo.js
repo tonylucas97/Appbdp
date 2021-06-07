@@ -25,12 +25,9 @@ export default function App({ navigation }) {
                     subtotal += total + json.notas[i].subtotal
                     const resultVenda = await fetch(`https://apibdp.herokuapp.com/vendas/porid?id=${json.notas[i].id}&token=${await AsyncStorage.getItem("token")}`)
                     const jsonVenda = await resultVenda.json()
+                    console.log(jsonVenda)
                     for (let j = 0; j < jsonVenda.vendas.length; j++) {
-                        if (jsonVenda.vendas[j].precoDesconto != 0) {
-                            lucroL += parseFloat((jsonVenda.vendas[j].precoDia - jsonVenda.vendas[j].precoDesconto) * jsonVenda.vendas[j].quantidade)
-                        }else{
-                            lucroL += parseFloat((jsonVenda.vendas[j].precoDia - json.notas[i].precoCompra) * jsonVenda.vendas[j].quantidade)
-                        }
+                        
                     }
                     
                     
@@ -59,7 +56,7 @@ export default function App({ navigation }) {
                 </View>
                 <View style={{ flexDirection: "row", flexWrap: "nowrap", paddingLeft: 7, marginTop: 25 ,width:"100%"}}>
                     <Text style={{ fontFamily: "Ubuntu-Regular", fontSize: 21 }}>Lucro: </Text>
-                    <Text style={{ fontFamily: "Ubuntu-Bold", fontSize: 21 }}>{lucro.toFixed(2).toString().replace(".", ",")}</Text>
+                    <Text style={{ fontFamily: "Ubuntu-Bold", fontSize: 21 }}>{parseFloat(lucro)}</Text>
                 </View>
                 <View style={{ flexDirection: "row", flexWrap: "nowrap", paddingLeft: 7, marginTop: 25 ,width:"100%"}}>
                     <Text style={{ fontFamily: "Ubuntu-Regular", fontSize: 21 }}>Vendas: </Text>
