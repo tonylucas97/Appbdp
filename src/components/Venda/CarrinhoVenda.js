@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Text, TextInput, View ,ToastAndroid} from 'react-native';
+import { SafeAreaView, Text, TextInput, View, ToastAndroid } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Svg, { Path } from "react-native-svg"
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,7 +11,7 @@ import StyledToast from "../../utils/StyledToast";
 export default function CarrinhoVenda({ navigation, route }) {
 
     const [carrinho, setCarrinho] = useState([] || route.params.carrinho);
-    const [mercadoriasBusca, setMercadoriasBusca] = useState();
+    const [mercadoriasBusca, setMercadoriasBusca] = useState({});
     const [showMercadorias, setShowMercadorias] = useState(false)
     const [textoBusca, setTextoBusca] = useState();
     const [showConfirma, setShowConfirma] = useState(false);
@@ -57,8 +57,8 @@ export default function CarrinhoVenda({ navigation, route }) {
             if (json) {
                 setInfoMercadoria(json.mercadoria);
                 setshowInfoMercadoria(true)
-            }else{
-                ToastAndroid.show("Produto nao cadastrado",ToastAndroid.SHORT)
+            } else {
+                ToastAndroid.show("Produto nao cadastrado", ToastAndroid.SHORT)
             }
         }
     }
@@ -75,12 +75,13 @@ export default function CarrinhoVenda({ navigation, route }) {
 
     const procuraMercadoria = async (codigo) => {
         setCodigoBarras(codigo)
-        const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${codigo}`);
-        const json = await result.json();
-
-        if(json){
-            console.log(json.mercadoria)
+        if (codigo.length > 2) {
+            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${codigo}`);
+            const json = await result.json();
+            console.log(json)
         }
+
+
     }
 
     const showOffInfomacoes = () => {
@@ -273,7 +274,7 @@ export default function CarrinhoVenda({ navigation, route }) {
                 </View>
             </SafeAreaView>
             {showInfoMercadoria && (
-                <InformacoesMercadoria mercadoria={infoMercadoria} addCarrinho={addCarrinho} showOffInformacoes={showOffInfomacoes}/>
+                <InformacoesMercadoria mercadoria={infoMercadoria} addCarrinho={addCarrinho} showOffInformacoes={showOffInfomacoes} />
             )}
             {showScanner && (
                 <View style={styles.container}>
