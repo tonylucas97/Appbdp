@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Text, TextInput, View, ToastAndroid } from 'react-native';
+import { SafeAreaView, Text, TextInput, View, ToastAndroid, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Svg, { Path } from "react-native-svg"
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,7 +11,7 @@ import StyledToast from "../../utils/StyledToast";
 export default function CarrinhoVenda({ navigation, route }) {
 
     const [carrinho, setCarrinho] = useState([] || route.params.carrinho);
-    const [mercadoriasBusca, setMercadoriasBusca] = useState({});
+    const [mercadoriasBusca, setMercadoriasBusca] = useState();
     const [showMercadorias, setShowMercadorias] = useState(false)
     const [textoBusca, setTextoBusca] = useState();
     const [showConfirma, setShowConfirma] = useState(false);
@@ -76,9 +76,13 @@ export default function CarrinhoVenda({ navigation, route }) {
     const procuraMercadoria = async (codigo) => {
         setCodigoBarras(codigo)
         if (codigo.length > 2) {
+            setShowMercadorias(true)
             const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${codigo}`);
             const json = await result.json();
             console.log(json)
+            setMercadoriasBusca(json.mercadoria)
+        } else {
+            setShowMercadorias(false)
         }
 
 
@@ -91,9 +95,10 @@ export default function CarrinhoVenda({ navigation, route }) {
     const abreShowInfoMercadoria = async (id) => {
         const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porid?id=${id}&token=${await AsyncStorage.getItem("token")}`)
         const json = await result.json()
+        setShowMercadorias(false)
         setInfoMercadoria(json.mercadoria);
         setshowInfoMercadoria(true)
-        setTextoBusca('')
+        setCodigoBarras('')
     }
 
     const addCarrinho = (nome, preco, desconto, quantidade, id) => {
@@ -131,7 +136,7 @@ export default function CarrinhoVenda({ navigation, route }) {
                             </Svg>
                         </Text>
                     </View>
-                    <TextInput placeholder="Procurar Mercadoria" style={{ backgroundColor: 'rgba(196,196,196,0.13)', paddingRight: 10, width: "70%" }} onChangeText={texto => procuraMercadoria(texto)} value={textoBusca} />
+                    <TextInput placeholder="Procurar Mercadoria" style={{ backgroundColor: 'rgba(196,196,196,0.13)', paddingRight: 10, width: "70%" }} onChangeText={texto => procuraMercadoria(texto)} value={codigoBarras} />
                     <Text style={{ backgroundColor: "#0079FF", color: "#fff", width: "15%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5 }} onPress={() => showScanner ? setShowScanner(false) : setShowScanner(true)}>
                         <Svg
                             width={24}
@@ -147,27 +152,23 @@ export default function CarrinhoVenda({ navigation, route }) {
                         </Svg>
                     </Text>
                 </View>
-                <View style={{ backgroundColor: "#fff", elevation: 4, zIndex: 100, width: "80%" }}>
-                    <View style={{ width: "80%" }}>
-                        {showMercadorias && (
-                            <View>
-                                <ScrollView style={{ height: 250 }}>
-                                    {mercadoriasBusca != undefined && (
-                                        mercadoriasBusca.map(item => {
-                                            return (
-                                                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                                    <Text onPress={() => abreShowInfoMercadoria(item.id)} style={{ fontFamily: "Ubuntu-Regular", paddingLeft: 12, paddingRight: 12, paddingBottom: 12, paddingTop: 18 }}>{item.nome}</Text>
-                                                    <Text onPress={() => abreShowInfoMercadoria(item.id)} style={{ fontFamily: "Ubuntu-Regular", paddingLeft: 12, paddingRight: 12, paddingBottom: 12, paddingTop: 18 }}>{item.precoVenda.toString().replace(".", ",")}</Text>
-                                                </View>
-                                            )
-                                        })
-                                    )}
-                                </ScrollView>
-                            </View>
-                        )}
-                    </View>
-                </View>
+                {showMercadorias && (
+                    <TouchableOpacity activeOpacity={0.90} onPress={() => abreShowInfoMercadoria(mercadoriasBusca.id)} style={{ backgroundColor: "#fff", elevation: 4, zIndex: 100, width: "80%", paddingTop: 13, paddingBottom: 13, paddingLeft: 15, paddingRight: 15 }}>
+                        <View style={{ width: "100%" }}>
 
+                            <View>
+                                {mercadoriasBusca && (
+                                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", flexWrap: "nowrap" }}>
+                                        <Text>{mercadoriasBusca.nome}</Text>
+                                        <Text>{mercadoriasBusca.codigoBarras}</Text>
+                                    </View>
+                                )}
+
+                            </View>
+
+                        </View>
+                    </TouchableOpacity>
+                )}
                 <View style={{ borderRadius: 5, width: "65%", flexDirection: "row", flexWrap: "wrap", marginTop: 35, justifyContent: "center" }}>
                     <Text style={{ fontSize: 24, fontFamily: "Ubuntu-Bold" }}>Carrinho</Text>
                 </View>
