@@ -278,7 +278,7 @@ export default function CarrinhoVenda({ navigation, route }) {
 
                 )}
                 <View style={{ flexDirection: "row", justifyContent: "flex-end", width: "80%" }}>
-                    <Text style={{ paddingRight: 15, fontFamily: "Ubuntu-Bold", marginTop: 15, fontSize: 16 }}>Total: {total ? total.replace(".", ",") : null}</Text>
+                    <Text style={{ paddingRight: 15, fontFamily: "Ubuntu-Bold", marginTop: 15, fontSize: 16 }}>Total: {total ? total.toString().replace(".", ",") : null}</Text>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "flex-end", width: "80%", marginTop: 20 }}>
                     <Text onPress={() => navigation.navigate("NomeClienteVenda")} style={{ fontFamily: "Ubuntu-regular", backgroundColor: "#FB212F", paddingBottom: 8, paddingTop: 8, paddingLeft: 19, paddingRight: 19, borderRadius: 5, marginRight: 15, color: "#fff" }}>Voltar</Text>

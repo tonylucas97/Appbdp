@@ -28,11 +28,11 @@ export default function VendaData({ navigation, route }) {
     );
 
     const detalheVenda = async (id) => {
-        const result = await fetch(`https://apibdp.herokuapp.com/notas/${id}/${await AsyncStorage.getItem("token")}`);
+        const result = await fetch(`https://apibdp.herokuapp.com/notas/porid?token=${await AsyncStorage.getItem("token")}&id=${id}`);
         const json = await result.json();
-        console.log(jsopn)
+        console.log(json)
         if (json.success) {
-            navigation.navigate("DetalheVenda", { cliente: json.notas.cliente, total: json.notas.subtotal, id: id })
+            navigation.navigate("DetalheVenda", { cliente: json.nota.cliente, total: json.nota.subtotal, id: id })
         }
     }
 
