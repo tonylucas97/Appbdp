@@ -77,10 +77,17 @@ export default function CarrinhoVenda({ navigation, route }) {
         setCodigoBarras(codigo)
         if (codigo.length > 2) {
             setShowMercadorias(true)
-            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${codigo}`);
-            const json = await result.json();
-            console.log(json)
-            setMercadoriasBusca(json.mercadoria)
+            if (parseInt(codigo) % 1 === 0) {
+                const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigolike?codigoBarras=${codigo}`);
+                const json = await result.json();
+                const lista = json.mercadoria
+                setMercadoriasBusca(lista)
+            } else {
+                const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/busca/${codigo}/${await AsyncStorage.getItem("token")}`);
+                const json = await result.json();
+                setMercadoriasBusca(json.mercadorias)
+            }
+
         } else {
             setShowMercadorias(false)
         }
@@ -153,21 +160,25 @@ export default function CarrinhoVenda({ navigation, route }) {
                     </Text>
                 </View>
                 {showMercadorias && (
-                    <TouchableOpacity activeOpacity={0.90} onPress={() => abreShowInfoMercadoria(mercadoriasBusca.id)} style={{ backgroundColor: "#fff", elevation: 4, zIndex: 100, width: "80%", paddingTop: 13, paddingBottom: 13, paddingLeft: 15, paddingRight: 15 }}>
+                    <View onPress={() => abreShowInfoMercadoria(mercadoriasBusca.id)} style={{ backgroundColor: "#fff", elevation: 4, zIndex: 100, width: "80%",paddingLeft: 15, paddingRight: 15 }}>
                         <View style={{ width: "100%" }}>
 
                             <View>
                                 {mercadoriasBusca && (
-                                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", flexWrap: "nowrap" }}>
-                                        <Text>{mercadoriasBusca.nome}</Text>
-                                        <Text>{mercadoriasBusca.codigoBarras}</Text>
-                                    </View>
+                                    mercadoriasBusca.map(item => {
+                                        return (
+                                            <TouchableOpacity onPress={() => abreShowInfoMercadoria(item.id)} activeOpacity={0.2} key={item.id} style={{ width: "100%", flexDirection: "row", justifyContent: "space-between", flexWrap: "nowrap" ,paddingTop: 15,paddingBottom:15}}>
+                                                <Text style={{width:"50%"}}>{item.nome}</Text>
+                                                <Text style={{width:"50%",textAlign:"right"}}>{item.codigoBarras}</Text>
+                                            </TouchableOpacity>
+                                        )
+                                    })
                                 )}
 
                             </View>
 
                         </View>
-                    </TouchableOpacity>
+                    </View>
                 )}
                 <View style={{ borderRadius: 5, width: "65%", flexDirection: "row", flexWrap: "wrap", marginTop: 35, justifyContent: "center" }}>
                     <Text style={{ fontSize: 24, fontFamily: "Ubuntu-Bold" }}>Carrinho</Text>
