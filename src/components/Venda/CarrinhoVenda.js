@@ -48,21 +48,6 @@ export default function CarrinhoVenda({ navigation, route }) {
         setShowBtnDelete(true)
     }
 
-    const onBarCodeRead = async (resultCodigo) => {
-        if (resultCodigo) {
-            console.log(resultCodigo)
-            setShowScanner(false)
-            const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigo?codigoBarras=${resultCodigo.data}`);
-            const json = await result.json();
-            if (json) {
-                setInfoMercadoria(json.mercadoria);
-                setshowInfoMercadoria(true)
-            } else {
-                ToastAndroid.show("Produto nao cadastrado", ToastAndroid.SHORT)
-            }
-        }
-    }
-
     const toggleShowConfirma = () => {
         if (showBtnDelete) {
             setShowConfirma(true)
@@ -77,16 +62,11 @@ export default function CarrinhoVenda({ navigation, route }) {
         setCodigoBarras(codigo)
         if (codigo.length > 2) {
             setShowMercadorias(true)
-            if (parseInt(codigo) % 1 === 0) {
-                const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/porcodigolike?codigoBarras=${codigo}`);
-                const json = await result.json();
-                const lista = json.mercadoria
-                setMercadoriasBusca(lista)
-            } else {
+           
                 const result = await fetch(`https://apibdp.herokuapp.com/mercadoria/busca/${codigo}/${await AsyncStorage.getItem("token")}`);
                 const json = await result.json();
                 setMercadoriasBusca(json.mercadorias)
-            }
+                console.log(json)
 
         } else {
             setShowMercadorias(false)
@@ -288,36 +268,7 @@ export default function CarrinhoVenda({ navigation, route }) {
             {showInfoMercadoria && (
                 <InformacoesMercadoria mercadoria={infoMercadoria} addCarrinho={addCarrinho} showOffInformacoes={showOffInfomacoes} />
             )}
-            {showScanner && (
-                <View style={styles.container}>
-                    <RNCamera
-                        ref={ref => {
-                            setCamera(ref);
-                        }}
-                        defaultTouchToFocus
-                        flashMode={RNCamera.Constants.FlashMode.on}
-                        autoFocus={RNCamera.Constants.AutoFocus.on}
-                        onBarCodeRead={result => onBarCodeRead(result)}
-                        androidCameraPermissionOptions={{
-                            title: 'Permission to use camera',
-                            message: 'We need your permission to use your camera',
-                            buttonPositive: 'Ok',
-                            buttonNegative: 'Cancel',
-                        }}
-                        style={styles.preview}
-                        type={RNCamera.Constants.Type.back}
-                    />
-                    <View style={[styles.overlay, styles.topOverlay]}>
-                        <Text style={styles.scanScreenMessage}>Please scan the barcode.</Text>
-                    </View>
-                    <View style={[styles.overlay, styles.bottomOverlay]}>
-                        <Text
-                            onPress={() => setShowScanner(false)}
-                            style={styles.enterBarcodeManualButton}
-                        >Cancelar</Text>
-                    </View>
-                </View>
-            )}
+            
         </React.Fragment>
     )
 }

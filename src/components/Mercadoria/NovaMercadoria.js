@@ -13,8 +13,6 @@ export default function NovaMercadoria({ navigation }) {
     const [showSuccess, setShowSuccess] = useState(false);
     const [showOptions, setShowOptions] = useState(false);
     const [camera, setCamera] = useState({ type: RNCamera.Constants.Type.back, flashMode: RNCamera.Constants.FlashMode.auto })
-    const [codigoBarras, setCodigoBarras] = useState("")
-    const [showScanner, setShowScanner] = useState(false)
 
     const salvaMercadoria = async () => {
         if (nome && precoCompra && precoVenda ) {
@@ -23,7 +21,7 @@ export default function NovaMercadoria({ navigation }) {
             form.append("nome", nome);
             form.append("precoCompra", parseFloat(precoCompra.replace(",", ".")));
             form.append("precoVenda", parseFloat(precoVenda.replace(",", ".")));
-            form.append("codigoBarras",codigoBarras.toString())
+            form.append("codigoBarras", new Date().toString())
             if (foto) {
                 form.append("img", {
                     uri: foto.uri,
@@ -72,10 +70,6 @@ export default function NovaMercadoria({ navigation }) {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <View style={{ width: "85%" }}>
                     <Text style={{ fontSize: 25, textAlign: 'center', fontFamily: "Ubuntu-Bold" }}>Nova Mercadoria</Text>
-                    <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "nowrap", justifyContent: "space-between", width: "100%" }}>
-                        <TextInput onChangeText={text => setCodigoBarras(text)} placeholder="Codigo de barras" value={codigoBarras} style={{ backgroundColor: "white", width: "48%", borderRadius: 5, paddingLeft: 14 }}/>
-                        <Text style={{ backgroundColor: "#0079FF", color: "#fff",width:"48%", textAlign: "center", paddingTop: 8, paddingBottom: 8, borderRadius: 5 }} onPress={() => showScanner ? setShowScanner(false) : setShowScanner(true)}>Codigo de Barras</Text>
-                    </View>
                     <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "space-between", width: "100%" }}>
                         <TextInput style={{ backgroundColor: "white", width: "100%", borderRadius: 5, paddingLeft: 14 }} placeholder="Nome" onChangeText={text => setNome(text)} />
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Compra" onChangeText={text => setPrecoCompra(text)} />
@@ -94,36 +88,6 @@ export default function NovaMercadoria({ navigation }) {
                 
 
             </View>
-            {showScanner && (
-                <View style={styles.container}>
-                    <RNCamera
-                        ref={ref => {
-                            setCamera(ref);
-                        }}
-                        defaultTouchToFocus
-                        flashMode={RNCamera.Constants.FlashMode.on}
-                        autoFocus={RNCamera.Constants.AutoFocus.on}
-                        onBarCodeRead={result => onBarCodeRead(result)}
-                        androidCameraPermissionOptions={{
-                            title: 'Permission to use camera',
-                            message: 'We need your permission to use your camera',
-                            buttonPositive: 'Ok',
-                            buttonNegative: 'Cancel',
-                        }}
-                        style={styles.preview}
-                        type={RNCamera.Constants.Type.back}
-                    />
-                    <View style={[styles.overlay, styles.topOverlay]}>
-                        <Text style={styles.scanScreenMessage}>Please scan the barcode.</Text>
-                    </View>
-                    <View style={[styles.overlay, styles.bottomOverlay]}>
-                        <Text
-                            onPress={() => setShowScanner(false)}
-                            style={styles.enterBarcodeManualButton}
-                        >Cancelar</Text>
-                    </View>
-                </View>
-            )}
         </React.Fragment>
     )
 }
