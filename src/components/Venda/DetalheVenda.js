@@ -73,7 +73,8 @@ export default function DetalheVenda({ navigation, route }) {
         
         <div style="width:80%;margin:0 auto;margin-bottom:30px;">
             
-            <p style="text-align:left;diplay:inline">${jsonNotas.nota.cliente}</p>
+            <span style="text-align:left"${jsonNotas.nota.cliente}</span>
+            <span>${jsonNotas.nota.data.toString().replace("-","/")}</span>
             
         </div>
         
@@ -115,7 +116,7 @@ export default function DetalheVenda({ navigation, route }) {
             `
         RNPrint.print({
             html: corpo
-            
+
         })
 
     }
@@ -137,19 +138,25 @@ export default function DetalheVenda({ navigation, route }) {
                     {mercadoriaVendida != undefined && (
 
                         mercadoriaVendida.map((item, index) => {
-                            return (
-                                <View key={index} style={{ flexDirection: "row", paddingBottom: 10, marginTop: 10, justifyContent: "center" }}>
-                                    <View style={{ borderBottomColor: "#C4C4C4", borderBottomWidth: 1, width: "85%", paddingBottom: 12, flexDirection: "row", flexWrap: "wrap" }}>
-                                        <Text style={{ fontFamily: "Ubuntu-Bold", padding: 5, width: "100%", color: "black" }}>{item.nome}</Text>
-                                        <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "100%" }}>Preço: {item.precoDesconto ? parseFloat(item.precoDesconto).toFixed(2) : parseFloat(item.precoDia).toFixed(2)}</Text>
-                                        <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
-                                            <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "55%" }}>Quantidade: {item.quantidade}</Text>
-                                            <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "45%" }}>Total: {item.precoDesconto ? (item.precoDesconto * item.quantidade).toFixed(2) : (item.precoDia * item.quantidade).toFixed(2)}</Text>
-                                        </View>
+                            if (item.nome) {
+                                return (
+                                    <View key={index} style={{ flexDirection: "row", paddingBottom: 10, marginTop: 10, justifyContent: "center" }}>
+                                        <View style={{ borderBottomColor: "#C4C4C4", borderBottomWidth: 1, width: "85%", paddingBottom: 12, flexDirection: "row", flexWrap: "wrap" }}>
+                                            <Text style={{ fontFamily: "Ubuntu-Bold", padding: 5, width: "100%", color: "black" }}>{item.nome}</Text>
+                                            <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "100%" }}>Preço: {item.precoDesconto ? parseFloat(item.precoDesconto).toFixed(2) : parseFloat(item.precoDia).toFixed(2)}</Text>
+                                            <View style={{ width: "100%", flexDirection: "row", flexWrap: "wrap" }}>
+                                                <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "55%" }}>Quantidade: {item.quantidade}</Text>
+                                                <Text style={{ fontFamily: "Ubuntu-Regular", padding: 5, width: "45%" }}>Total: {item.precoDesconto ? (item.precoDesconto * item.quantidade).toFixed(2) : (item.precoDia * item.quantidade).toFixed(2)}</Text>
+                                            </View>
 
+                                        </View>
                                     </View>
-                                </View>
-                            )
+                                )
+                            } else {
+                                return (
+                                    <Text>sdasdas</Text>
+                                )
+                            }
                         })
 
                     )}

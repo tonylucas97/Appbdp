@@ -120,7 +120,6 @@ export default function DetalheMercadoria({ navigation, route }) {
                         </Text>
                     </View>
                     <View style={{ flexDirection: "row", marginTop: 30, flexWrap: "wrap", justifyContent: "space-between", width: "100%" }}>
-                    <TextInput style={{ backgroundColor: "white", width: "100%", borderRadius: 5, paddingLeft: 14,marginBottom:15 }} placeholder="Nome" value={codigoBarras} editable={false} />
                         <TextInput style={{ backgroundColor: "white", width: "100%", borderRadius: 5, paddingLeft: 14 }} placeholder="Nome" value={nome} onChangeText={text => setNome(text)} />
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Compra" value={precoCompra ? precoCompra.toString().replace(".", ",") : precoCompra} onChangeText={text => setPrecoCompra(text)} />
                         <TextInput style={{ backgroundColor: "white", marginTop: 15, width: "48%", borderRadius: 5, paddingLeft: 14 }} placeholder="Preço Venda" value={precoVenda ? precoVenda.toString().replace(".", ",") : precoVenda} onChangeText={text => setPrecoVenda(text)} />
